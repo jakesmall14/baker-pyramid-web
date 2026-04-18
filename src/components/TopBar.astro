@@ -1,0 +1,82 @@
+---
+---
+
+<header id="topbar">
+  <div class="topbar-inner">
+
+    <!-- Left: hamburger -->
+    <button id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="square">
+        <line x1="3" y1="6"  x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
+    <!-- Center: wordmark image -->
+    <a href="/" class="topbar-logo-link" aria-label="The Baker Pyramid — home">
+      <img src="/topbar/topbaricon.png" alt="The Baker Pyramid" class="topbar-logo-img" />
+    </a>
+
+    <!-- Right: Instagram -->
+    <a
+      href="https://www.instagram.com/thebakerpyramid"
+      class="topbar-ig"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="The Baker Pyramid on Instagram"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+        <circle cx="12" cy="12" r="4.5"/>
+        <circle cx="17.4" cy="6.6" r="0.6" fill="currentColor" stroke="none"/>
+      </svg>
+    </a>
+
+  </div>
+</header>
+
+<!-- Hamburger dropdown -->
+<nav id="hamburger-menu" class="hamburger-dropdown" aria-hidden="true">
+  <button class="hamburger-item" data-modal="modal-archive">All Prior Pyramids</button>
+  <button class="hamburger-item" data-modal="modal-music">Play More Music in New York</button>
+  <button class="hamburger-item" data-modal="modal-about">About</button>
+  <button class="hamburger-item" data-modal="modal-signup">Sign Up for Pyramid Dropoffs</button>
+</nav>
+
+<script>
+  const btn = document.getElementById('hamburger-btn')!;
+  const menu = document.getElementById('hamburger-menu')!;
+
+  function openMenu() {
+    menu.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+    menu.setAttribute('aria-hidden', 'false');
+  }
+
+  function closeMenu() {
+    menu.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+    menu.setAttribute('aria-hidden', 'true');
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.contains('open') ? closeMenu() : openMenu();
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!menu.contains(e.target as Node) && e.target !== btn) closeMenu();
+  });
+
+  // Close when a menu item triggers a modal
+  menu.querySelectorAll<HTMLButtonElement>('.hamburger-item').forEach((item) => {
+    item.addEventListener('click', closeMenu);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+</script>

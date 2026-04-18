@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import PDFViewer from '../../components/PDFViewer.astro';
 import { getIssues } from '../../utils/issues.js';
 import resources from '../../../resources.json';
+import brands from '../../../brands.json';
 
 export async function getStaticPaths() {
   const issues = getIssues();
@@ -21,11 +22,8 @@ const { issueNum, pdfUrl } = Astro.props;
 ---
 
 <Layout title={`The Baker Pyramid — Issue ${issueNum}`}>
-  <div style="padding: 1rem 1.5rem 0;">
-    <a
-      href="/"
-      style="font-family: var(--font-sans); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--black); text-decoration: none;"
-    >← Latest Issue</a>
+  <div style="padding: 0.75rem 1.25rem 0; font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;">
+    <a href="/" style="color: var(--black); text-decoration: none;">← Latest Issue</a>
   </div>
-  <PDFViewer pdfUrl={pdfUrl} issueNum={issueNum} resources={resources} />
+  <PDFViewer pdfUrl={pdfUrl} issueNum={issueNum} resources={resources} brands={brands} />
 </Layout>

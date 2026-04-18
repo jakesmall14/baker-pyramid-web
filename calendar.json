@@ -1,9 +1,224 @@
 [
   {
-    "venue": "Rockwood Music Hall",
+    "venue": "Pete's Candy Store",
+    "event": "Open Mic hosted by Bruce Martin",
+    "day": "Sunday",
+    "time": "5:00 PM",
+    "url": "http://www.petescandystore.com/open-mic/",
+    "info": "Sign up at 4:30pm. FREE. 709 Lorimer St, Brooklyn."
+  },
+  {
+    "venue": "Freddy's Bar",
+    "event": "Open Mic",
+    "day": "Sunday",
+    "time": "7:30 PM",
+    "url": "http://freddysbar.com",
+    "info": "Third Sunday of the month. Sign up at 7pm. 537 5th Ave, Brooklyn."
+  },
+  {
+    "venue": "Bowery Electric",
+    "event": "End of the Weak Hip Hop Open Mic",
+    "day": "Sunday",
+    "time": "8:00 PM",
+    "url": "https://www.boweryelectric.com",
+    "info": "Doors at 8pm. Free before 9pm. MCs bring instrumentals. 327 Bowery, New York NY."
+  },
+  {
+    "venue": "Lucinda's",
+    "event": "Open Mic",
+    "day": "Sunday",
+    "time": "8:00 PM",
+    "url": "https://www.google.com/search?q=Lucinda%27s+East+Village+NYC",
+    "info": "Two songs. East Village."
+  },
+  {
+    "venue": "The Bitter End",
+    "event": "Richie Cannata's Monday Night Open Mic Jam",
+    "day": "Monday",
+    "time": "11:00 PM",
+    "url": "https://www.bitterend.com",
+    "info": "Every Monday. 147 Bleecker St, NYC."
+  },
+  {
+    "venue": "Gran Torino",
+    "event": "Open Mic",
+    "day": "Monday",
+    "time": "8:00 PM",
+    "info": "Sign up at 7:30pm. Two songs or 8 minutes. Call to confirm."
+  },
+  {
+    "venue": "Pianos",
+    "event": "Freestyle Mondays",
+    "day": "Monday",
+    "time": "9:00 PM",
+    "url": "https://pianosnyc.com",
+    "info": "Last Monday of every month. $10. 158 Ludlow St."
+  },
+  {
+    "venue": "Falucka Lounge",
+    "event": "Supreme Bars MC and Producers Battle",
+    "day": "Monday",
+    "time": "8:00 PM",
+    "url": "https://www.facebook.com/FaluckaLounge",
+    "info": "Every third Monday. $6-$8. 162 Bleecker St."
+  },
+  {
+    "venue": "House of Kava",
+    "event": "Open Mic",
+    "day": "Monday",
+    "time": "8:30 PM",
+    "url": "https://www.facebook.com/HouseOfKava",
+    "info": "Sign up at 8:30pm. Performers get 15 minutes. 238 Central Ave, Brooklyn."
+  },
+  {
+    "venue": "KGB Bar",
+    "event": "Open Mic",
+    "day": "Monday",
+    "time": "8:00 PM",
+    "url": "https://kgbbar.com",
+    "info": "East Village. 85 E 4th St, New York NY."
+  },
+  {
+    "venue": "Under Saint Marks",
     "event": "Open Mic",
     "day": "Tuesday",
+    "time": "9:30 PM",
+    "url": "https://www.understmarks.com",
+    "info": "Sign-ups get 7 minutes. $4 at the door. 94 St Marks Pl."
+  },
+  {
+    "venue": "Baker Falls",
+    "event": "Tortured Tuesdays",
+    "day": "Tuesday",
+    "time": "6:00 PM",
+    "url": "https://www.google.com/search?q=Baker+Falls+NYC",
+    "info": "6-9pm. Invite-only after your first visit."
+  },
+  {
+    "venue": "Melophobe",
+    "event": "Open Mic",
+    "day": "Wednesday",
+    "time": "9:00 PM",
+    "info": "Every Wednesday."
+  },
+  {
+    "venue": "Nuyorican Poets Cafe",
+    "event": "Open Slam",
+    "day": "Wednesday",
+    "time": "9:00 PM",
+    "url": "https://www.nuyorican.org/open-mic/",
+    "info": "Every Wednesday except the first. Hosted by Jive Poetic."
+  },
+  {
+    "venue": "Paddy Reilly's Music Bar",
+    "event": "Open Mic",
+    "day": "Wednesday",
     "time": "7:00 PM",
-    "url": "https://www.rockwoodmusichall.com"
+    "url": "http://www.paddyreillysmusicbar.us",
+    "info": "Sign up at 6:30pm. 3 songs. 519 Second Ave at 29th St."
+  },
+  {
+    "venue": "Halyards",
+    "event": "Acoustic Wednesdays",
+    "day": "Wednesday",
+    "time": "9:30 PM",
+    "url": "http://www.barhalyards.com",
+    "info": "1st and 3rd Wednesday. 406 3rd Ave at 6th St, Brooklyn."
+  },
+  {
+    "venue": "Jalopy Theatre",
+    "event": "Open Mic",
+    "day": "Wednesday",
+    "time": "6:00 PM",
+    "url": "http://jalopytheatre.org",
+    "info": "1 song. 315 Columbia St, Brooklyn."
+  },
+  {
+    "venue": "Stratosphere Studios Cafe",
+    "event": "Blue Nile 1st Thursdays",
+    "day": "Thursday",
+    "time": "7:00 PM",
+    "url": "https://www.facebook.com/bluenilebk/",
+    "info": "First Thursday of the month. 227 Utica Ave, Crown Heights."
+  },
+  {
+    "venue": "Sugar Bar",
+    "event": "Open Mic with Live Band",
+    "day": "Thursday",
+    "time": "9:00 PM",
+    "url": "https://www.sugarbarnyc.com",
+    "info": "$10 cover. 254 W 72nd St, New York NY."
+  },
+  {
+    "venue": "Bushwick Public House",
+    "event": "The Grinders Mic",
+    "day": "Thursday",
+    "time": "7:00 PM",
+    "url": "https://www.eventbrite.com/e/grinders-mic-open-mic-series-tickets-36966995278",
+    "info": "2nd and 4th Thursdays. $8. 1288 Myrtle Ave, Brooklyn."
+  },
+  {
+    "venue": "Kitty Kiernan's",
+    "event": "Open Mic & Jam",
+    "day": "Thursday",
+    "time": "10:00 PM",
+    "url": "https://www.facebook.com/KittyKiernans",
+    "info": "Every Thursday. Always free. Bay Ridge, Brooklyn."
+  },
+  {
+    "venue": "Greenhouse Cafe",
+    "event": "Original Thursdays",
+    "day": "Thursday",
+    "time": "8:00 PM",
+    "url": "https://www.facebook.com/GreenhouseCafeBayRidge",
+    "info": "Sign up at 8pm. Open mic at 10pm. 7717 3rd Ave, Brooklyn."
+  },
+  {
+    "venue": "The Bitter End",
+    "event": "Acoustic Open Mic",
+    "day": "Saturday",
+    "time": "1:00 PM",
+    "url": "https://www.bitterend.com",
+    "info": "Sign up at 12:30pm. 1pm-6pm. No cover. 147 Bleecker St."
+  },
+  {
+    "venue": "Paddy Reilly's Music Bar",
+    "event": "Songwriter's Open Mic",
+    "day": "Saturday",
+    "time": "6:00 PM",
+    "url": "http://www.paddyreillysmusicbar.us",
+    "info": "Sign up at 5:30pm. Hosted by Rick Johnson. 15 minutes or 3 songs."
+  },
+  {
+    "venue": "Cassidy's",
+    "event": "Open Mic",
+    "day": "Saturday",
+    "time": "7:00 PM",
+    "url": "http://cassidysnyc.com",
+    "info": "7pm-11pm. No cover. 65 West 55th St, New York NY."
+  },
+  {
+    "venue": "Funkadelic Studios",
+    "event": "Funk Open Jam",
+    "day": "Saturday",
+    "time": "8:00 PM",
+    "url": "http://funkadelicstudios.com",
+    "info": "$10 cover. 8pm-11pm. Hosted by Gabe Gonzalez. 209 West 40th St, 5th Floor, NYC."
+  },
+  {
+    "venue": "Nuyorican Poets Cafe",
+    "event": "WORDS: Hip Hop & Poetry Showcase & Open Mic",
+    "day": "Saturday",
+    "time": "9:00 PM",
+    "url": "https://www.nuyorican.org/open-mic/",
+    "info": "Third Saturday of the month. $13. 236 East 3rd St, New York NY."
+  },
+  {
+    "venue": "Sidewalk NYC",
+    "event": "The Line Up — Hip Hop & Soul Rock Showcase",
+    "day": "Saturday",
+    "time": "10:30 PM",
+    "url": "https://www.sidewalknyc.com",
+    "info": "1st Saturdays. No cover. 94 Ave A at E. 6th St."
   }
 ]

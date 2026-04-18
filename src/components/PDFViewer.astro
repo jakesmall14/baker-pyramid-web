@@ -1,10 +1,19 @@
 ---
+interface Resource {
+  name: string;
+  url: string;
+  expandToLine?: boolean;
+}
+interface Brand {
+  name: string;
+}
 interface Props {
   pdfUrl: string;
   issueNum: number;
-  resources: Array<{ name: string; url: string }>;
+  resources: Resource[];
+  brands: Brand[];
 }
-const { pdfUrl, issueNum, resources } = Astro.props;
+const { pdfUrl, issueNum, resources, brands } = Astro.props;
 ---
 
 <div class="pdf-viewer-wrap">
@@ -12,6 +21,7 @@ const { pdfUrl, issueNum, resources } = Astro.props;
     id="pdf-viewer"
     data-pdf-url={pdfUrl}
     data-resources={JSON.stringify(resources)}
+    data-brands={JSON.stringify(brands)}
   >
     <div class="pdf-loading">Loading issue {issueNum}…</div>
   </div>
@@ -22,9 +32,14 @@ const { pdfUrl, issueNum, resources } = Astro.props;
 
   GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
+  interface Resource { name: string; url: string; expandToLine?: boolean }
+  interface Brand { name: string }
+  interface Char { char: string; x: number; y: number; w: number; h: number }
+
   const viewer = document.getElementById('pdf-viewer')!;
   const pdfUrl = viewer.dataset.pdfUrl!;
-  const resources: Array<{ name: string; url: string }> = JSON.parse(viewer.dataset.resources!);
+  const resources: Resource[] = JSON.parse(viewer.dataset.resources!);
+  const brands: Brand[] = JSON.parse(viewer.dataset.brands!);
 
   let pdfCache: any = null;
   let renderController: AbortController | null = null;
@@ -42,7 +57,6 @@ const { pdfUrl, issueNum, resources } = Astro.props;
 
     const pdf = await getPdf();
     const containerWidth = document.documentElement.clientWidth;
-
     viewer.innerHTML = '';
 
     for (let i = 1; i <= pdf.numPages; i++) {
@@ -62,7 +76,6 @@ const { pdfUrl, issueNum, resources } = Astro.props;
 
     const wrap = document.createElement('div');
     wrap.className = 'pdf-page-wrap';
-    // height drives layout; width tracks naturally via 100%
     wrap.style.height = viewport.height + 'px';
 
     const canvas = document.createElement('canvas');
@@ -80,33 +93,37 @@ const { pdfUrl, issueNum, resources } = Astro.props;
     } catch {
       return wrap;
     }
-
     wrap.appendChild(canvas);
 
-    // Invisible interactive link layer
     const overlay = document.createElement('div');
     overlay.className = 'pdf-link-overlay';
     wrap.appendChild(overlay);
 
     const textContent = await page.getTextContent();
-    placeResourceLinks(overlay, textContent, viewport, scale, resources);
+    const chars = buildCharMap(textContent, viewport, scale);
+    const fullText = chars.map((c) => c.char).join('');
+
+    // Pass 1: named resources (exact matches with optional line expansion)
+    const linkedRanges: [number, number][] = [];
+    placeLinks(overlay, chars, fullText, resources, linkedRanges, (r) => r.url, (r) => r.expandToLine);
+
+    // Pass 2: brand auto-links (only where not already linked)
+    placeLinks(
+      overlay,
+      chars,
+      fullText,
+      brands,
+      linkedRanges,
+      (b) => `https://www.google.com/search?q=${encodeURIComponent(b.name)}`,
+      () => false
+    );
 
     return wrap;
   }
 
-  function placeResourceLinks(
-    overlay: HTMLElement,
-    textContent: any,
-    viewport: any,
-    scale: number,
-    resources: Array<{ name: string; url: string }>
-  ) {
-    const items = (textContent.items as any[]).filter(
-      (item) => 'str' in item && item.str.length > 0
-    );
-
-    interface CharEntry { char: string; x: number; y: number; w: number; h: number }
-    const chars: CharEntry[] = [];
+  function buildCharMap(textContent: any, viewport: any, scale: number): Char[] {
+    const items = (textContent.items as any[]).filter((i) => 'str' in i && i.str.length > 0);
+    const chars: Char[] = [];
 
     for (let k = 0; k < items.length; k++) {
       const item = items[k];
@@ -118,52 +135,78 @@ const { pdfUrl, issueNum, resources } = Astro.props;
       const itemW = item.width * scale;
       const charW = item.str.length > 0 ? itemW / item.str.length : 0;
 
-      // Insert a synthetic space when there's a horizontal gap on the same line
+      // Synthetic inter-word space when there's a horizontal gap on the same line
       if (k > 0 && chars.length > 0) {
         const prev = chars[chars.length - 1];
-        const prevEndX = prev.x + prev.w;
         const yDiff = Math.abs((cy - fontH) - prev.y);
-        if (yDiff < fontH * 0.6 && cx > prevEndX + charW * 0.25) {
-          chars.push({ char: ' ', x: prevEndX, y: cy - fontH, w: cx - prevEndX, h: fontH });
+        if (yDiff < fontH * 0.6 && cx > prev.x + prev.w + charW * 0.25) {
+          chars.push({ char: ' ', x: prev.x + prev.w, y: cy - fontH, w: cx - (prev.x + prev.w), h: fontH });
         }
       }
-
       for (let i = 0; i < item.str.length; i++) {
         chars.push({ char: item.str[i], x: cx + i * charW, y: cy - fontH, w: charW, h: fontH });
       }
     }
+    return chars;
+  }
 
-    const fullText = chars.map((c) => c.char).join('');
-
-    for (const resource of resources) {
+  function placeLinks<T extends { name: string }>(
+    overlay: HTMLElement,
+    chars: Char[],
+    fullText: string,
+    entries: T[],
+    linkedRanges: [number, number][],
+    getUrl: (entry: T) => string,
+    getExpand: (entry: T) => boolean | undefined
+  ) {
+    for (const entry of entries) {
+      const name = entry.name;
       let from = 0;
       while (true) {
-        const idx = fullText.indexOf(resource.name, from);
+        const idx = fullText.indexOf(name, from);
         if (idx === -1) break;
 
-        const slice = chars.slice(idx, idx + resource.name.length);
-        const x1 = Math.min(...slice.map((c) => c.x));
-        const x2 = Math.max(...slice.map((c) => c.x + c.w));
-        const y1 = Math.min(...slice.map((c) => c.y));
-        const maxH = Math.max(...slice.map((c) => c.h));
+        const end = idx + name.length;
+
+        // Skip if this range overlaps an already-linked range
+        const overlaps = linkedRanges.some(([s, e]) => idx < e && end > s);
+        if (overlaps) { from = end; continue; }
+
+        const matchChars = chars.slice(idx, end);
+        let x1 = Math.min(...matchChars.map((c) => c.x));
+        let x2 = Math.max(...matchChars.map((c) => c.x + c.w));
+        const y1 = Math.min(...matchChars.map((c) => c.y));
+        const maxH = Math.max(...matchChars.map((c) => c.h));
+
+        if (getExpand(entry)) {
+          const tol = maxH * 0.6;
+          for (let i = idx - 1; i >= 0; i--) {
+            if (Math.abs(chars[i].y - y1) <= tol) x1 = Math.min(x1, chars[i].x);
+            else break;
+          }
+          for (let i = end; i < chars.length; i++) {
+            if (Math.abs(chars[i].y - y1) <= tol) x2 = Math.max(x2, chars[i].x + chars[i].w);
+            else break;
+          }
+        }
 
         const a = document.createElement('a');
-        a.href = resource.url;
+        a.href = getUrl(entry);
         a.target = '_blank';
         a.rel = 'noopener noreferrer';
-        a.title = resource.name;
+        a.title = name;
         a.style.left = x1 + 'px';
         a.style.top = y1 + 'px';
         a.style.width = (x2 - x1) + 'px';
         a.style.height = maxH * 1.15 + 'px';
         overlay.appendChild(a);
 
-        from = idx + resource.name.length;
+        linkedRanges.push([idx, end]);
+        from = end;
       }
     }
   }
 
-  // Re-render on resize (debounced)
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(renderAll, 350);

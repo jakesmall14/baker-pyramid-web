@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import PDFViewer from '../components/PDFViewer.astro';
 import { getLatestIssue } from '../utils/issues.js';
 import resources from '../../resources.json';
+import brands from '../../brands.json';
 
 const latest = getLatestIssue();
 ---
@@ -12,5 +13,6 @@ const latest = getLatestIssue();
     pdfUrl={latest.url}
     issueNum={latest.num}
     resources={resources}
+    brands={brands}
   />
 </Layout>

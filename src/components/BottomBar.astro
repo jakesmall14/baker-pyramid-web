@@ -9,44 +9,45 @@ interface Issue {
 
 interface Props {
   issues: Issue[];
+  latestIssueUrl: string;
 }
 
-const { issues } = Astro.props;
-// Newest first for the gallery
+const { issues, latestIssueUrl } = Astro.props;
 const reversedIssues = [...issues].reverse();
+
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
 ---
 
 <!-- BOTTOM BAR -->
 <footer id="bottom-bar">
   <nav class="bottom-bar-nav">
-    <button data-modal="modal-archive">All Prior Pyramids</button>
-    <span class="bottom-bar-sep">|</span>
-    <button data-modal="modal-music">Music Calendar</button>
-    <span class="bottom-bar-sep">|</span>
-    <button data-modal="modal-about">About</button>
-    <span class="bottom-bar-sep">|</span>
-    <a href="https://www.instagram.com/thebakerpyramid" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <a class="bottom-bar-btn" href={latestIssueUrl} target="_blank" rel="noopener noreferrer">
+      Print Today's Pyramid
+    </a>
+    <span class="bottom-bar-sep">✸</span>
+    <button class="bottom-bar-btn" data-modal="modal-archive">All Prior Pyramids</button>
+    <span class="bottom-bar-sep">✸</span>
+    <button class="bottom-bar-btn" data-modal="modal-music">Play More Music in New York</button>
+    <span class="bottom-bar-sep">✸</span>
+    <button class="bottom-bar-btn" data-modal="modal-about">About</button>
+    <span class="bottom-bar-sep">✸</span>
+    <a class="bottom-bar-btn" href="https://www.instagram.com/thebakerpyramid" target="_blank" rel="noopener noreferrer">Instagram</a>
+    <span class="bottom-bar-sep">✸</span>
+    <button class="bottom-bar-btn" data-modal="modal-signup">Sign Up for Pyramid Dropoffs</button>
   </nav>
   <div class="bottom-bar-tm">The Baker Pyramid &copy; 2026 &middot; NYC &middot; All Rights Reserved.</div>
 </footer>
 
-<!-- ALL PRIOR PYRAMIDS MODAL -->
+<!-- ALL PRIOR PYRAMIDS MODAL (full-screen) -->
 <div id="modal-archive" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="All Prior Pyramids">
-  <div class="modal-box">
-    <button class="modal-close" data-close="modal-archive">Close ×</button>
-    <div class="modal-title">All Prior Pyramids</div>
-    <div
-      class="archive-thumb-grid"
-      id="archive-thumb-grid"
-      data-issues={JSON.stringify(reversedIssues)}
-    >
-      <!-- thumbnails rendered by client script on first open -->
+  <div class="modal-box modal-box--archive">
+    <div class="modal-archive-header">
+      <div class="modal-title" style="border:none;margin:0;padding:0;">All Prior Pyramids</div>
+      <button class="modal-close" data-close="modal-archive">Close ×</button>
+    </div>
+    <div class="archive-thumb-grid" id="archive-thumb-grid">
       {reversedIssues.map((issue) => (
-        <div
-          class="archive-thumb-cell"
-          data-pdf-url={issue.url}
-          data-issue-num={issue.num}
-        >
+        <div class="archive-thumb-cell" data-pdf-url={issue.url} data-issue-num={issue.num}>
           <div class="archive-thumb-placeholder">{issue.num}</div>
           <div class="archive-thumb-label">Issue {issue.num}</div>
         </div>
@@ -66,14 +67,28 @@ const reversedIssues = [...issues].reverse();
   </div>
 </div>
 
-<!-- MUSIC CALENDAR MODAL -->
-<div id="modal-music" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Music Calendar">
+<!-- PLAY MORE MUSIC IN NEW YORK MODAL -->
+<div id="modal-music" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Play More Music in New York">
   <div class="modal-box">
     <button class="modal-close" data-close="modal-music">Close ×</button>
-    <div class="modal-title">Music Calendar</div>
-    <ul class="calendar-list">
+    <div class="modal-title">Play More Music in New York</div>
+
+    <!-- Day tabs -->
+    <div class="music-day-tabs" id="music-day-tabs">
+      {DAYS.map((day, i) => (
+        <>
+          <button class="day-tab" data-day={day}>
+            {day.slice(0, 3)}
+          </button>
+          {i < DAYS.length - 1 && <span class="day-tab-sep">|</span>}
+        </>
+      ))}
+    </div>
+
+    <!-- All entries — JS filters by day -->
+    <ul class="calendar-list" id="calendar-list">
       {calendar.map((entry) => (
-        <li class="calendar-item">
+        <li class="calendar-item" data-day={entry.day}>
           <div class="calendar-venue">
             {entry.url
               ? <a href={entry.url} target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">{entry.venue}</a>
@@ -81,10 +96,12 @@ const reversedIssues = [...issues].reverse();
             }
           </div>
           <div class="calendar-event">{entry.event}</div>
-          <div class="calendar-time">{entry.day} — {entry.time}</div>
+          <div class="calendar-time">{entry.time}{entry.info ? ` — ${entry.info}` : ''}</div>
         </li>
       ))}
     </ul>
+
+    <p class="calendar-none" id="calendar-none" style="display:none;">No listings for this day.</p>
   </div>
 </div>
 
@@ -94,18 +111,26 @@ const reversedIssues = [...issues].reverse();
     <button class="modal-close" data-close="modal-about">Close ×</button>
     <div class="modal-title">About</div>
     <div class="about-body">
-      <p>
-        The Baker Pyramid is a free, independent culture newspaper published online and distributed across New York City.
-        It covers music, food, nightlife, art, and the texture of daily life in the five boroughs — in plain language, without agenda, and without charge.
-      </p>
-      <p>
-        Each issue is published as a PDF and presented here verbatim, exactly as printed.
-        The newspaper is the object. This site exists only to serve it.
-      </p>
-      <p>
-        To receive issues, find a copy at one of our distribution points, or read here at thebakerpyramid.com.
-      </p>
+      <p>The Baker Pyramid — read it, or ash your cigarette out on it. We cover music and art in New York City.</p>
     </div>
+  </div>
+</div>
+
+<!-- SIGN UP FOR PYRAMID DROPOFFS MODAL -->
+<div id="modal-signup" class="modal-backdrop modal-backdrop--fullscreen" role="dialog" aria-modal="true" aria-label="Sign Up for Pyramid Dropoffs">
+  <div class="modal-signup-box">
+    <div class="modal-signup-header">
+      <div class="modal-signup-title">Sign Up for Pyramid Dropoffs</div>
+      <button class="modal-close" data-close="modal-signup" style="position:static;">Close ×</button>
+    </div>
+    <iframe
+      id="signup-frame"
+      src="https://docs.google.com/forms/d/e/1FAIpQLSd2f7abla2soyyVLUfq4yyoTJQaFvtyLP7zKmfJcRk2jR0qZQ/viewform?embedded=true"
+      title="Sign Up for Pyramid Dropoffs"
+      frameborder="0"
+      marginheight="0"
+      marginwidth="0"
+    >Loading…</iframe>
   </div>
 </div>
 
@@ -114,7 +139,7 @@ const reversedIssues = [...issues].reverse();
 
   GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
 
-  // ── Modal open/close ───────────────────────────────────
+  // ── Modal helpers ──────────────────────────────────────
   function openModal(id: string) {
     document.getElementById(id)?.classList.add('open');
   }
@@ -142,26 +167,52 @@ const reversedIssues = [...issues].reverse();
     }
   });
 
+  // ── Music day tabs ─────────────────────────────────────
+  const ALL_DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dayTabs = document.querySelectorAll<HTMLButtonElement>('.day-tab');
+  const calItems = document.querySelectorAll<HTMLLIElement>('#calendar-list .calendar-item');
+  const noneMsg = document.getElementById('calendar-none')!;
+
+  function selectDay(day: string) {
+    dayTabs.forEach(t => t.classList.toggle('active', t.dataset.day === day));
+    let visible = 0;
+    calItems.forEach(item => {
+      const show = item.dataset.day === day;
+      (item as HTMLElement).style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    noneMsg.style.display = visible === 0 ? '' : 'none';
+  }
+
+  dayTabs.forEach(tab => {
+    tab.addEventListener('click', () => selectDay(tab.dataset.day!));
+  });
+
+  // Re-default to today each time the music modal opens
+  const musicModal = document.getElementById('modal-music')!;
+  new MutationObserver(() => {
+    if (musicModal.classList.contains('open')) {
+      selectDay(ALL_DAYS[new Date().getDay()]);
+    }
+  }).observe(musicModal, { attributes: true, attributeFilter: ['class'] });
+
+  // Set initial state immediately
+  selectDay(ALL_DAYS[new Date().getDay()]);
+
   // ── Archive thumbnail lazy rendering ───────────────────
   const grid = document.getElementById('archive-thumb-grid')!;
   const archiveModal = document.getElementById('modal-archive')!;
-  let thumbsLoaded = false;
+  let thumbsInited = false;
 
-  archiveModal.addEventListener('transitionend', initThumbs, { once: false });
-
-  // Trigger on first open (no CSS transition, so use MutationObserver)
-  const observer = new MutationObserver(() => {
-    if (archiveModal.classList.contains('open') && !thumbsLoaded) {
-      thumbsLoaded = true;
-      observer.disconnect();
+  new MutationObserver(() => {
+    if (archiveModal.classList.contains('open') && !thumbsInited) {
+      thumbsInited = true;
       initThumbs();
     }
-  });
-  observer.observe(archiveModal, { attributes: true, attributeFilter: ['class'] });
+  }).observe(archiveModal, { attributes: true, attributeFilter: ['class'] });
 
   function initThumbs() {
     const cells = grid.querySelectorAll<HTMLElement>('.archive-thumb-cell');
-
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -171,60 +222,45 @@ const reversedIssues = [...issues].reverse();
           renderThumb(cell);
         });
       },
-      { root: grid.closest('.modal-box'), rootMargin: '200px', threshold: 0 }
+      { root: grid, rootMargin: '300px', threshold: 0 }
     );
-
-    cells.forEach((cell) => {
-      if (!cell.dataset.rendered) io.observe(cell);
-    });
+    cells.forEach((cell) => { if (!cell.dataset.rendered) io.observe(cell); });
   }
 
   async function renderThumb(cell: HTMLElement) {
     if (cell.dataset.rendered) return;
     cell.dataset.rendered = 'true';
-
     const pdfUrl = cell.dataset.pdfUrl!;
-    const issueNum = cell.dataset.issueNum!;
-
     try {
       const pdf = await getDocument(pdfUrl).promise;
       const page = await pdf.getPage(1);
-
-      const cellWidth = cell.offsetWidth || 160;
+      const cellWidth = cell.offsetWidth || 320;
       const pixelRatio = window.devicePixelRatio || 1;
       const unscaled = page.getViewport({ scale: 1 });
       const scale = cellWidth / unscaled.width;
       const viewport = page.getViewport({ scale });
-
       const canvas = document.createElement('canvas');
       canvas.width = Math.floor(cellWidth * pixelRatio);
       canvas.height = Math.floor(viewport.height * pixelRatio);
       canvas.style.width = cellWidth + 'px';
       canvas.style.height = viewport.height + 'px';
-
       const ctx = canvas.getContext('2d')!;
       ctx.scale(pixelRatio, pixelRatio);
       await page.render({ canvasContext: ctx, viewport }).promise;
-
-      // Replace placeholder with rendered canvas
-      const placeholder = cell.querySelector('.archive-thumb-placeholder');
-      placeholder?.replaceWith(canvas);
+      cell.querySelector('.archive-thumb-placeholder')?.replaceWith(canvas);
     } catch (err) {
-      console.warn(`Thumb render failed for issue ${issueNum}:`, err);
+      console.warn(`Thumb render failed for ${cell.dataset.issueNum}:`, err);
     }
   }
 
   // ── PDF view modal ─────────────────────────────────────
   const pdfFrame = document.getElementById('pdf-frame') as HTMLIFrameElement;
   const pdfViewLabel = document.getElementById('pdf-view-label')!;
-  const pdfViewModal = document.getElementById('modal-pdf-view')!;
 
   grid.querySelectorAll<HTMLElement>('.archive-thumb-cell').forEach((cell) => {
     cell.addEventListener('click', () => {
-      const url = cell.dataset.pdfUrl!;
-      const num = cell.dataset.issueNum!;
-      pdfFrame.src = url;
-      pdfViewLabel.textContent = `Issue ${num}`;
+      pdfFrame.src = cell.dataset.pdfUrl!;
+      pdfViewLabel.textContent = `Issue ${cell.dataset.issueNum}`;
       closeModal('modal-archive');
       openModal('modal-pdf-view');
     });

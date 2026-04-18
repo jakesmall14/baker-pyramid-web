@@ -1,16 +1,20 @@
 [
   { "name": "Café Mogador", "url": "https://maps.google.com/?q=Cafe+Mogador+NYC" },
   { "name": "Caravan of Dreams", "url": "https://maps.google.com/?q=Caravan+of+Dreams+NYC" },
-  { "name": "DntWatchTV", "url": "https://open.spotify.com/album/3UH8OQK1mrECpP6rpVdWHV" },
-  { "name": "Tame Impala", "url": "https://open.spotify.com/artist/5INjqkS1o8h1imAzPqGZng" },
-  { "name": "Jay-Z", "url": "https://open.spotify.com/artist/3nFkdlSjzX9mRTtwJOb6v1" },
-  { "name": "Nas", "url": "https://open.spotify.com/artist/20qISvAhX20dpIbOOzGK3q" },
-  { "name": "50 Cent", "url": "https://open.spotify.com/artist/3q7HBObVc0L8jNqK7Es2tB" },
+  { "name": "DntWatchTV", "url": "https://www.google.com/search?q=DntWatchTV+317+album", "expandToLine": true },
+  { "name": "Tame Impala", "url": "https://www.google.com/search?q=Tame+Impala+Innerspeaker+album", "expandToLine": true },
+  { "name": "Jay-Z", "url": "https://www.google.com/search?q=Jay-Z+The+Blueprint+album", "expandToLine": true },
+  { "name": "Nas", "url": "https://www.google.com/search?q=Nas+Illmatic+album", "expandToLine": true },
+  { "name": "50 Cent", "url": "https://www.google.com/search?q=50+Cent+The+Massacre+album", "expandToLine": true },
+  { "name": "Westside Gunn", "url": "https://www.google.com/search?q=Westside+Gunn+rapper", "expandToLine": true },
   { "name": "Gathers", "url": "https://maps.google.com/?q=Gathers+NYC" },
   { "name": "Cipriani Downtown", "url": "https://maps.google.com/?q=Cipriani+Downtown+NYC" },
   { "name": "Sweet Chick", "url": "https://maps.google.com/?q=Sweet+Chick+NYC" },
   { "name": "Las' Lap", "url": "https://maps.google.com/?q=Las+Lap+NYC" },
   { "name": "Margaritaville", "url": "https://maps.google.com/?q=Margaritaville+NYC" },
   { "name": "Clockwork Bar", "url": "https://maps.google.com/?q=Clockwork+Bar+NYC" },
-  { "name": "Scarr's Pizza", "url": "https://maps.google.com/?q=Scarrs+Pizza+NYC" }
+  { "name": "Scarr's Pizza", "url": "https://maps.google.com/?q=Scarrs+Pizza+NYC" },
+  { "name": "Black Music", "url": "https://www.google.com/search?q=Black+Music+LeRoi+Jones+book", "expandToLine": true },
+  { "name": "Assata: An Autobiography", "url": "https://www.google.com/search?q=Assata+An+Autobiography+book", "expandToLine": true },
+  { "name": "The Alchemist", "url": "https://www.google.com/search?q=The+Alchemist+Paulo+Coelho+book", "expandToLine": true }
 ]
