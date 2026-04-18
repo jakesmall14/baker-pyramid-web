@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PDFViewer from '../components/PDFViewer.astro';
+import { getLatestIssue } from '../utils/issues.js';
+import resources from '../../resources.json';
+
+const latest = getLatestIssue();
+---
+
+<Layout title={`The Baker Pyramid — Issue ${latest.num}`}>
+  <PDFViewer
+    pdfUrl={latest.url}
+    issueNum={latest.num}
+    resources={resources}
+  />
+</Layout>

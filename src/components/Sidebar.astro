@@ -1,0 +1,12 @@
+---
+interface Props {
+  latestIssueUrl: string;
+}
+const { latestIssueUrl } = Astro.props;
+---
+
+<aside id="sidebar">
+  <a href={latestIssueUrl} target="_blank" rel="noopener noreferrer">
+    Print Today's Pyramid
+  </a>
+</aside>

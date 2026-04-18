@@ -1,0 +1,120 @@
+---
+import calendar from '../../calendar.json';
+
+interface Issue {
+  num: number;
+  filename: string;
+  url: string;
+}
+
+interface Props {
+  issues: Issue[];
+}
+
+const { issues } = Astro.props;
+const reversedIssues = [...issues].reverse();
+---
+
+<header id="navbar">
+  <a href="/" class="masthead">The Baker Pyramid</a>
+  <nav>
+    <button data-modal="modal-archive">Archive Library</button>
+    <button data-modal="modal-music">Music Calendar</button>
+    <button data-modal="modal-about">About</button>
+  </nav>
+</header>
+
+<!-- ARCHIVE MODAL -->
+<div id="modal-archive" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Archive Library">
+  <div class="modal-box">
+    <button class="modal-close" data-close="modal-archive">Close ×</button>
+    <div class="modal-title">Archive Library</div>
+    <div class="archive-grid">
+      {reversedIssues.map((issue) => (
+        <div class="archive-item">
+          <div class="archive-item-num">#{issue.num}</div>
+          <div class="archive-item-label">Issue {issue.num}</div>
+          <div class="archive-item-actions">
+            <a href={`/archive/${issue.num}`}>View</a>
+            <a href={issue.url} target="_blank" rel="noopener noreferrer">Print</a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<!-- MUSIC CALENDAR MODAL -->
+<div id="modal-music" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Music Calendar">
+  <div class="modal-box">
+    <button class="modal-close" data-close="modal-music">Close ×</button>
+    <div class="modal-title">Music Calendar</div>
+    <ul class="calendar-list">
+      {calendar.map((entry) => (
+        <li class="calendar-item">
+          <div class="calendar-venue">
+            {entry.url
+              ? <a href={entry.url} target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">{entry.venue}</a>
+              : entry.venue
+            }
+          </div>
+          <div class="calendar-event">{entry.event}</div>
+          <div class="calendar-time">{entry.day} — {entry.time}</div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div id="modal-about" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="About">
+  <div class="modal-box">
+    <button class="modal-close" data-close="modal-about">Close ×</button>
+    <div class="modal-title">About</div>
+    <div class="about-body">
+      <p>
+        The Baker Pyramid is a free, independent culture newspaper published online and distributed across New York City.
+        It covers music, food, nightlife, art, and the texture of life in the five boroughs — in plain language, without agenda, and without charge.
+      </p>
+      <p>
+        Each issue is published as a PDF and presented here verbatim, exactly as printed.
+        The newspaper is the object. The site exists only to serve it.
+      </p>
+      <p>
+        To receive issues, find a copy at one of our distribution points, or read here at thebakerpyramid.com.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initModals() {
+    document.querySelectorAll<HTMLButtonElement>('[data-modal]').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const id = trigger.dataset.modal!;
+        document.getElementById(id)?.classList.add('open');
+      });
+    });
+
+    document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.close!;
+        document.getElementById(id)?.classList.remove('open');
+      });
+    });
+
+    document.querySelectorAll<HTMLDivElement>('.modal-backdrop').forEach(backdrop => {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) backdrop.classList.remove('open');
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
+      }
+    });
+  }
+
+  initModals();
+</script>

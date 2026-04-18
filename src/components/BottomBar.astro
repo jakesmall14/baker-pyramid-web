@@ -1,0 +1,238 @@
+---
+import calendar from '../../calendar.json';
+
+interface Issue {
+  num: number;
+  filename: string;
+  url: string;
+}
+
+interface Props {
+  issues: Issue[];
+}
+
+const { issues } = Astro.props;
+// Newest first for the gallery
+const reversedIssues = [...issues].reverse();
+---
+
+<!-- BOTTOM BAR -->
+<footer id="bottom-bar">
+  <nav class="bottom-bar-nav">
+    <button data-modal="modal-archive">All Prior Pyramids</button>
+    <span class="bottom-bar-sep">|</span>
+    <button data-modal="modal-music">Music Calendar</button>
+    <span class="bottom-bar-sep">|</span>
+    <button data-modal="modal-about">About</button>
+    <span class="bottom-bar-sep">|</span>
+    <a href="https://www.instagram.com/thebakerpyramid" target="_blank" rel="noopener noreferrer">Instagram</a>
+  </nav>
+  <div class="bottom-bar-tm">The Baker Pyramid &copy; 2026 &middot; NYC &middot; All Rights Reserved.</div>
+</footer>
+
+<!-- ALL PRIOR PYRAMIDS MODAL -->
+<div id="modal-archive" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="All Prior Pyramids">
+  <div class="modal-box">
+    <button class="modal-close" data-close="modal-archive">Close ×</button>
+    <div class="modal-title">All Prior Pyramids</div>
+    <div
+      class="archive-thumb-grid"
+      id="archive-thumb-grid"
+      data-issues={JSON.stringify(reversedIssues)}
+    >
+      <!-- thumbnails rendered by client script on first open -->
+      {reversedIssues.map((issue) => (
+        <div
+          class="archive-thumb-cell"
+          data-pdf-url={issue.url}
+          data-issue-num={issue.num}
+        >
+          <div class="archive-thumb-placeholder">{issue.num}</div>
+          <div class="archive-thumb-label">Issue {issue.num}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<!-- PDF FULL-SCREEN VIEW MODAL -->
+<div id="modal-pdf-view" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Issue viewer">
+  <div class="modal-pdf-box">
+    <div class="modal-pdf-topbar">
+      <button id="back-to-archive">← All Prior Pyramids</button>
+      <span class="modal-pdf-label" id="pdf-view-label"></span>
+    </div>
+    <iframe id="pdf-frame" src="" title="Issue PDF"></iframe>
+  </div>
+</div>
+
+<!-- MUSIC CALENDAR MODAL -->
+<div id="modal-music" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="Music Calendar">
+  <div class="modal-box">
+    <button class="modal-close" data-close="modal-music">Close ×</button>
+    <div class="modal-title">Music Calendar</div>
+    <ul class="calendar-list">
+      {calendar.map((entry) => (
+        <li class="calendar-item">
+          <div class="calendar-venue">
+            {entry.url
+              ? <a href={entry.url} target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">{entry.venue}</a>
+              : entry.venue
+            }
+          </div>
+          <div class="calendar-event">{entry.event}</div>
+          <div class="calendar-time">{entry.day} — {entry.time}</div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<!-- ABOUT MODAL -->
+<div id="modal-about" class="modal-backdrop" role="dialog" aria-modal="true" aria-label="About">
+  <div class="modal-box">
+    <button class="modal-close" data-close="modal-about">Close ×</button>
+    <div class="modal-title">About</div>
+    <div class="about-body">
+      <p>
+        The Baker Pyramid is a free, independent culture newspaper published online and distributed across New York City.
+        It covers music, food, nightlife, art, and the texture of daily life in the five boroughs — in plain language, without agenda, and without charge.
+      </p>
+      <p>
+        Each issue is published as a PDF and presented here verbatim, exactly as printed.
+        The newspaper is the object. This site exists only to serve it.
+      </p>
+      <p>
+        To receive issues, find a copy at one of our distribution points, or read here at thebakerpyramid.com.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+
+  GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
+  // ── Modal open/close ───────────────────────────────────
+  function openModal(id: string) {
+    document.getElementById(id)?.classList.add('open');
+  }
+  function closeModal(id: string) {
+    document.getElementById(id)?.classList.remove('open');
+  }
+
+  document.querySelectorAll<HTMLButtonElement>('[data-modal]').forEach((btn) => {
+    btn.addEventListener('click', () => openModal(btn.dataset.modal!));
+  });
+
+  document.querySelectorAll<HTMLButtonElement>('[data-close]').forEach((btn) => {
+    btn.addEventListener('click', () => closeModal(btn.dataset.close!));
+  });
+
+  document.querySelectorAll<HTMLElement>('.modal-backdrop').forEach((backdrop) => {
+    backdrop.addEventListener('click', (e) => {
+      if (e.target === backdrop) backdrop.classList.remove('open');
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-backdrop.open').forEach((m) => m.classList.remove('open'));
+    }
+  });
+
+  // ── Archive thumbnail lazy rendering ───────────────────
+  const grid = document.getElementById('archive-thumb-grid')!;
+  const archiveModal = document.getElementById('modal-archive')!;
+  let thumbsLoaded = false;
+
+  archiveModal.addEventListener('transitionend', initThumbs, { once: false });
+
+  // Trigger on first open (no CSS transition, so use MutationObserver)
+  const observer = new MutationObserver(() => {
+    if (archiveModal.classList.contains('open') && !thumbsLoaded) {
+      thumbsLoaded = true;
+      observer.disconnect();
+      initThumbs();
+    }
+  });
+  observer.observe(archiveModal, { attributes: true, attributeFilter: ['class'] });
+
+  function initThumbs() {
+    const cells = grid.querySelectorAll<HTMLElement>('.archive-thumb-cell');
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const cell = entry.target as HTMLElement;
+          io.unobserve(cell);
+          renderThumb(cell);
+        });
+      },
+      { root: grid.closest('.modal-box'), rootMargin: '200px', threshold: 0 }
+    );
+
+    cells.forEach((cell) => {
+      if (!cell.dataset.rendered) io.observe(cell);
+    });
+  }
+
+  async function renderThumb(cell: HTMLElement) {
+    if (cell.dataset.rendered) return;
+    cell.dataset.rendered = 'true';
+
+    const pdfUrl = cell.dataset.pdfUrl!;
+    const issueNum = cell.dataset.issueNum!;
+
+    try {
+      const pdf = await getDocument(pdfUrl).promise;
+      const page = await pdf.getPage(1);
+
+      const cellWidth = cell.offsetWidth || 160;
+      const pixelRatio = window.devicePixelRatio || 1;
+      const unscaled = page.getViewport({ scale: 1 });
+      const scale = cellWidth / unscaled.width;
+      const viewport = page.getViewport({ scale });
+
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.floor(cellWidth * pixelRatio);
+      canvas.height = Math.floor(viewport.height * pixelRatio);
+      canvas.style.width = cellWidth + 'px';
+      canvas.style.height = viewport.height + 'px';
+
+      const ctx = canvas.getContext('2d')!;
+      ctx.scale(pixelRatio, pixelRatio);
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      // Replace placeholder with rendered canvas
+      const placeholder = cell.querySelector('.archive-thumb-placeholder');
+      placeholder?.replaceWith(canvas);
+    } catch (err) {
+      console.warn(`Thumb render failed for issue ${issueNum}:`, err);
+    }
+  }
+
+  // ── PDF view modal ─────────────────────────────────────
+  const pdfFrame = document.getElementById('pdf-frame') as HTMLIFrameElement;
+  const pdfViewLabel = document.getElementById('pdf-view-label')!;
+  const pdfViewModal = document.getElementById('modal-pdf-view')!;
+
+  grid.querySelectorAll<HTMLElement>('.archive-thumb-cell').forEach((cell) => {
+    cell.addEventListener('click', () => {
+      const url = cell.dataset.pdfUrl!;
+      const num = cell.dataset.issueNum!;
+      pdfFrame.src = url;
+      pdfViewLabel.textContent = `Issue ${num}`;
+      closeModal('modal-archive');
+      openModal('modal-pdf-view');
+    });
+  });
+
+  document.getElementById('back-to-archive')?.addEventListener('click', () => {
+    closeModal('modal-pdf-view');
+    pdfFrame.src = '';
+    openModal('modal-archive');
+  });
+</script>
