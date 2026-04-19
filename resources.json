@@ -16,5 +16,20 @@
   { "name": "Scarr's Pizza", "url": "https://maps.google.com/?q=Scarrs+Pizza+NYC" },
   { "name": "Black Music", "url": "https://www.google.com/search?q=Black+Music+LeRoi+Jones+book", "expandToLine": true },
   { "name": "Assata: An Autobiography", "url": "https://www.google.com/search?q=Assata+An+Autobiography+book", "expandToLine": true },
-  { "name": "The Alchemist", "url": "https://www.google.com/search?q=The+Alchemist+Paulo+Coelho+book", "expandToLine": true }
+  { "name": "The Alchemist", "url": "https://www.google.com/search?q=The+Alchemist+Paulo+Coelho+book", "expandToLine": true },
+
+  { "name": "Quarters", "url": "https://www.google.com/search?q=Quarters+band+NYC", "expandToLine": true },
+  { "name": "Simon & Garfunkel", "url": "https://www.google.com/search?q=Simon+%26+Garfunkel+Bookends+album", "expandToLine": true },
+  { "name": "Aoris", "url": "https://www.google.com/search?q=Aoris+Greece+In+Existence+album", "expandToLine": true },
+  { "name": "Carlita", "url": "https://www.google.com/search?q=Carlita+Sentimental+album", "expandToLine": true },
+  { "name": "Justin Beiber", "url": "https://www.google.com/search?q=Justin+Bieber+My+World+EP", "expandToLine": true },
+
+  { "name": "Forgtmenot", "url": "https://maps.google.com/?q=Forgtmenot+138+Division+St+New+York+NY" },
+  { "name": "Santo Tacos", "url": "https://www.eatsantotaco.com/" },
+  { "name": "Felix", "url": "https://www.felixnyc.com/" },
+
+  { "name": "Baker Falls", "url": "https://bakerfalls.com/" },
+  { "name": "Kettle of Fish", "url": "https://www.kettleoffishnyc.com/" },
+  { "name": "The Library", "url": "https://maps.google.com/?q=The+Library+7+Ave+A+New+York+NY" },
+  { "name": "Milano's", "url": "https://milanosbar.com/" }
 ]
