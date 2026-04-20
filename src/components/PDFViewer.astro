@@ -1,4 +1,6 @@
 ---
+import regionsData from '../../regions.json';
+
 interface Resource {
   name: string;
   url: string;
@@ -7,6 +9,14 @@ interface Resource {
 interface Brand {
   name: string;
 }
+interface Region {
+  title: string;
+  url: string;
+  rx: number;
+  ry: number;
+  rw: number;
+  rh: number;
+}
 interface Props {
   pdfUrl: string;
   issueNum: number;
@@ -14,6 +24,7 @@ interface Props {
   brands: Brand[];
 }
 const { pdfUrl, issueNum, resources, brands } = Astro.props;
+const issueRegions: Region[] = (regionsData as Record<string, Region[]>)[String(issueNum)] ?? [];
 ---
 
 <div class="pdf-viewer-wrap">
@@ -22,6 +33,7 @@ const { pdfUrl, issueNum, resources, brands } = Astro.props;
     data-pdf-url={pdfUrl}
     data-resources={JSON.stringify(resources)}
     data-brands={JSON.stringify(brands)}
+    data-regions={JSON.stringify(issueRegions)}
   >
     <div class="pdf-loading">Loading issue {issueNum}…</div>
   </div>
@@ -34,12 +46,14 @@ const { pdfUrl, issueNum, resources, brands } = Astro.props;
 
   interface Resource { name: string; url: string; expandToLine?: boolean }
   interface Brand { name: string }
+  interface Region { title: string; url: string; rx: number; ry: number; rw: number; rh: number }
   interface Char { char: string; x: number; y: number; w: number; h: number }
 
   const viewer = document.getElementById('pdf-viewer')!;
   const pdfUrl = viewer.dataset.pdfUrl!;
   const resources: Resource[] = JSON.parse(viewer.dataset.resources!);
   const brands: Brand[] = JSON.parse(viewer.dataset.brands!);
+  const regions: Region[] = JSON.parse(viewer.dataset.regions!);
 
   let pdfCache: any = null;
   let renderController: AbortController | null = null;
@@ -117,6 +131,9 @@ const { pdfUrl, issueNum, resources, brands } = Astro.props;
       (b) => `https://www.google.com/search?q=${encodeURIComponent(b.name)}`,
       () => false
     );
+
+    // Pass 3: coordinate-based image/logo regions
+    placeRegions(overlay, regions, viewport);
 
     return wrap;
   }
@@ -204,6 +221,21 @@ const { pdfUrl, issueNum, resources, brands } = Astro.props;
         linkedRanges.push([idx, end]);
         from = end;
       }
+    }
+  }
+
+  function placeRegions(overlay: HTMLElement, regs: Region[], viewport: any) {
+    for (const r of regs) {
+      const a = document.createElement('a');
+      a.href = r.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.title = r.title;
+      a.style.left = (r.rx * viewport.width) + 'px';
+      a.style.top = (r.ry * viewport.height) + 'px';
+      a.style.width = (r.rw * viewport.width) + 'px';
+      a.style.height = (r.rh * viewport.height) + 'px';
+      overlay.appendChild(a);
     }
   }
 

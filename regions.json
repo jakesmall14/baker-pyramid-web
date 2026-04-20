@@ -1,0 +1,24 @@
+{
+  "21": [
+    {
+      "title": "New York Knicks",
+      "url": "https://www.google.com/search?q=New+York+Knicks",
+      "rx": 0.585, "ry": 0.62, "rw": 0.145, "rh": 0.265
+    },
+    {
+      "title": "Screen Slate NYC",
+      "url": "https://www.google.com/search?q=Screen+Slate+NYC",
+      "rx": 0.01, "ry": 0.76, "rw": 0.13, "rh": 0.155
+    },
+    {
+      "title": "Russian & Turkish Baths NYC",
+      "url": "https://www.google.com/search?q=Russian+Turkish+Baths+NYC",
+      "rx": 0.145, "ry": 0.755, "rw": 0.165, "rh": 0.165
+    },
+    {
+      "title": "Play Dead",
+      "url": "https://playdead.app/",
+      "rx": 0.595, "ry": 0.855, "rw": 0.135, "rh": 0.115
+    }
+  ]
+}
