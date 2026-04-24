@@ -1,0 +1,160 @@
+---
+import Layout from '../layouts/Layout.astro';
+import locationsData from '../../public/data/locations.json';
+---
+
+<Layout title="Get the Pyramid — The Baker Pyramid">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <div id="bp-map"></div>
+  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script is:inline define:vars={{ locationsData }}>
+    var SIZE = 2000;
+    var BOUNDS = [[0, 0], [SIZE, SIZE]];
+
+    var map = L.map('bp-map', {
+      crs: L.CRS.Simple,
+      minZoom: -1,
+      maxZoom: 2,
+      zoomControl: false,
+      attributionControl: false,
+      scrollWheelZoom: false,
+    });
+    map.fitBounds(BOUNDS);
+
+    function makePopupEl(loc) {
+      var div = document.createElement('div');
+      [['bp-pop-name', loc.name], ['bp-pop-addr', loc.address], ['bp-pop-cat', loc.category]].forEach(function (pair) {
+        var p = document.createElement('p');
+        p.className = pair[0];
+        p.textContent = pair[1];
+        div.appendChild(p);
+      });
+      return div;
+    }
+
+    locationsData.forEach(function (loc, i) {
+      var lat = 1800 - Math.floor(i / 8) * 225;
+      var lng = 200 + (i % 8) * 225;
+
+      var icon = L.divIcon({
+        className: '',
+        html: '<div class="bp-mk">' + (i + 1) + '</div>',
+        iconSize: [26, 26],
+        iconAnchor: [13, 13],
+        popupAnchor: [0, -18],
+      });
+
+      L.marker([lat, lng], { icon })
+        .bindPopup(L.popup({ className: 'bp-pop', closeButton: true }).setContent(makePopupEl(loc)))
+        .addTo(map);
+    });
+
+    function showPlaceholder() {
+      var el = document.getElementById('bp-map');
+      el.classList.add('is-placeholder');
+      var msg = document.createElement('div');
+      msg.className = 'bp-msg';
+      msg.textContent = 'Map coming soon — hand-drawn SVG drops here.';
+      el.appendChild(msg);
+    }
+
+    fetch('/maps/pyramid-map.svg', { method: 'HEAD' })
+      .then(function (r) {
+        if (r.ok) {
+          L.imageOverlay('/maps/pyramid-map.svg', BOUNDS).addTo(map);
+        } else {
+          showPlaceholder();
+        }
+      })
+      .catch(showPlaceholder);
+  </script>
+
+  <style is:global>
+    #bp-map {
+      width: 100%;
+      height: calc(100vh - var(--topbar-h) - var(--bottom-bar-h));
+      background: #fff;
+    }
+
+    #bp-map.is-placeholder {
+      outline: 2px dashed #000;
+      outline-offset: -16px;
+    }
+
+    .bp-msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      color: #000;
+      pointer-events: none;
+      z-index: 1000;
+      white-space: nowrap;
+    }
+
+    .bp-mk {
+      width: 26px;
+      height: 26px;
+      background: #000;
+      border-radius: 50%;
+      color: #fff;
+      font-family: Georgia, serif;
+      font-size: 10px;
+      line-height: 26px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    /* ── Popup reset ─────────────────────────────────────── */
+    .bp-pop .leaflet-popup-content-wrapper {
+      background: #fff;
+      border: 1px solid #000;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    .bp-pop .leaflet-popup-content {
+      margin: 0;
+      padding: 12px 16px;
+      min-width: 160px;
+    }
+
+    .bp-pop .leaflet-popup-tip-container {
+      display: none;
+    }
+
+    .bp-pop .leaflet-popup-close-button {
+      color: #000 !important;
+      font-size: 16px;
+      top: 4px;
+      right: 6px;
+    }
+
+    .bp-pop-name {
+      font-family: Georgia, serif;
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin: 0 0 4px;
+      color: #000;
+    }
+
+    .bp-pop-addr {
+      font-family: Georgia, serif;
+      font-size: 0.8rem;
+      margin: 0 0 4px;
+      color: #000;
+    }
+
+    .bp-pop-cat {
+      font-family: Georgia, serif;
+      font-size: 0.75rem;
+      font-style: italic;
+      margin: 0;
+      color: #000;
+      text-transform: capitalize;
+    }
+  </style>
+</Layout>
