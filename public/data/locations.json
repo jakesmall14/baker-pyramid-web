@@ -1,0 +1,357 @@
+[
+  {
+    "name": "Abraço",
+    "address": "81 E 7th St, New York, NY, 10003",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Book Club Bar",
+    "address": "197 E 3rd St, New York, NY 10009",
+    "category": "coffee shop"
+  },
+  {
+    "name": "C&B",
+    "address": "178 E 7th St, New York, NY 10009",
+    "category": "coffee shop"
+  },
+  {
+    "name": "designer collab.",
+    "address": "96 N 5th St, Brooklyn, NY 11249",
+    "category": "coffee shop"
+  },
+  {
+    "name": "MUD",
+    "address": "307 E 9th St, New York, NY 10003",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Thayer",
+    "address": "99 Avenue B, New York, NY 10009",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Porto Rico Importing Co.",
+    "address": "40 St Marks Pl, New York, NY 10003147",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Variety Coffee Roasters",
+    "address": "146 Wyckoff Ave, Brooklyn, NY 11237",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Wykoff Starr Coffee Shop",
+    "address": "30 Wyckoff Ave, Brooklyn, NY 11237",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Foster Sundry",
+    "address": "215 Knickerbocker Ave, Brooklyn, NY 11237",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Café Grumpy",
+    "address": "13 Essex St, New York, NY 10011",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Café Chrystie",
+    "address": "184 E 7th St, New York, NY 10009",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Café Mogador",
+    "address": "101 St Marks Pl, New York, NY 10009",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Café Mogador",
+    "address": "133 Wythe Ave, Brooklyn, NY 11249",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Dimes",
+    "address": "49 Canal St, New York, NY 10002",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Nook",
+    "address": "45 Irving Ave Unit 1, Brooklyn, NY 11237",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Partners Coffee",
+    "address": "125 N 6th St, Brooklyn, NY 11249",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Saint Michel Cafe",
+    "address": "462 Irving Ave, Brooklyn, NY 11237",
+    "category": "coffee shop"
+  },
+  {
+    "name": "Scarr's Pizza",
+    "address": "35 Orchard St, New York, NY 10002",
+    "category": "restaurant"
+  },
+  {
+    "name": "Vinnie's Pizzeria",
+    "address": "148 Bedford Ave, Brooklyn, NY 11249",
+    "category": "restaurant"
+  },
+  {
+    "name": "Superiority Burger",
+    "address": "119 Avenue A, New York, NY 10009",
+    "category": "restaurant"
+  },
+  {
+    "name": "Sunday Morning",
+    "address": "184 E 7th St, New York, NY 10009",
+    "category": "restaurant"
+  },
+  {
+    "name": "Good Bar",
+    "address": "1 Bedford Ave, Brooklyn, NY 11222",
+    "category": "bar"
+  },
+  {
+    "name": "LunÀtico",
+    "address": "486 Halsey St, Brooklyn, NY 11233",
+    "category": "bar"
+  },
+  {
+    "name": "KGB Bar",
+    "address": "85 E 4th St, New York, NY 10003",
+    "category": "bar"
+  },
+  {
+    "name": "The Library",
+    "address": "Avenue A, New York, NY 10009",
+    "category": "bar"
+  },
+  {
+    "name": "The Narrows",
+    "address": "1037 Flushing Ave, Brooklyn, NY 11237",
+    "category": "bar"
+  },
+  {
+    "name": "The Lot Radio",
+    "address": "17 Nassau Ave, Brooklyn, NY 11222",
+    "category": "bar"
+  },
+  {
+    "name": "Ergot Records",
+    "address": "32 E 2nd St, New York, NY 10003",
+    "category": "record store"
+  },
+  {
+    "name": "Fire Talk",
+    "address": "67 West St Brooklyn NY",
+    "category": "record store"
+  },
+  {
+    "name": "Vinyl Fantasy",
+    "address": "194 Knickerbocker Ave, Brooklyn, NY 11237",
+    "category": "record store"
+  },
+  {
+    "name": "Octopus Records",
+    "address": "204 Irving Ave, Brooklyn, NY 11237",
+    "category": "record store"
+  },
+  {
+    "name": "Vinyl + Thread",
+    "address": "55 Anchorage Pl, Brooklyn, NY 11201",
+    "category": "record store"
+  },
+  {
+    "name": "Catalyst Records",
+    "address": "88 Essex St, New York, NY 10002",
+    "category": "record store"
+  },
+  {
+    "name": "Pimbeche Vintage",
+    "address": "90 E 3rd St, New York, NY 10003",
+    "category": "vintage store"
+  },
+  {
+    "name": "3rd and Bazaar",
+    "address": "191 E 3rd St, New York, NY 10009",
+    "category": "vintage store"
+  },
+  {
+    "name": "Beacon's Closet",
+    "address": "184 E 7th St, New York, NY 10009",
+    "category": "vintage store"
+  },
+  {
+    "name": "Beacon's Closet",
+    "address": "74 Guernsey St, Brooklyn, NY 11222",
+    "category": "vintage store"
+  },
+  {
+    "name": "Search & Destroy",
+    "address": "25 St Marks Pl A, New York, NY 10003",
+    "category": "vintage store"
+  },
+  {
+    "name": "City Fun",
+    "address": "45 1st Ave, New York, NY 10003",
+    "category": "vintage store"
+  },
+  {
+    "name": "Rare Bodega",
+    "address": "29 A Ludlow St, New York, NY 10002",
+    "category": "vintage store"
+  },
+  {
+    "name": "Mr. Throwback",
+    "address": "437 E 9th St, New York, NY 10009",
+    "category": "vintage store"
+  },
+  {
+    "name": "First Team Vintage",
+    "address": "173 Ludlow St, New York, NY 10002",
+    "category": "vintage store"
+  },
+  {
+    "name": "L Train Vintage",
+    "address": "629 Grand St, Brooklyn, NY 11211",
+    "category": "vintage store"
+  },
+  {
+    "name": "L Train Vintage",
+    "address": "106 Thames St, Brooklyn, NY 11237",
+    "category": "vintage store"
+  },
+  {
+    "name": "L Train Vintage",
+    "address": "1 St Nicholas Ave, Brooklyn, NY 11237",
+    "category": "vintage store"
+  },
+  {
+    "name": "Alphaville",
+    "address": "55 Anchorage Pl, Brooklyn, NY 11201",
+    "category": "venue"
+  },
+  {
+    "name": "Arlene's Grocery",
+    "address": "95 Stanton St, New York, NY 10002",
+    "category": "venue"
+  },
+  {
+    "name": "Baby's All Right",
+    "address": "146 Broadway, Brooklyn, NY 11211",
+    "category": "venue"
+  },
+  {
+    "name": "Baker Falls",
+    "address": "192 Allen St, New York, NY 10002",
+    "category": "venue"
+  },
+  {
+    "name": "Berlin",
+    "address": "25 Avenue A, New York, NY 10009",
+    "category": "venue"
+  },
+  {
+    "name": "Nightclub 101",
+    "address": "101 Avenue A, New York, NY 10009",
+    "category": "venue"
+  },
+  {
+    "name": "Pete's Candy Store",
+    "address": "709 Lorimer St, Brooklyn, NY 11211",
+    "category": "venue"
+  },
+  {
+    "name": "Pianos",
+    "address": "158 Ludlow St, New York, NY 10002",
+    "category": "venue"
+  },
+  {
+    "name": "Purgatory",
+    "address": "88 Essex St, New York, NY 10002",
+    "category": "venue"
+  },
+  {
+    "name": "Sleepwalk",
+    "address": "251 Bushwick Ave, Brooklyn, NY 11206",
+    "category": "venue"
+  },
+  {
+    "name": "Sultan Room",
+    "address": "234 Starr St, Brooklyn, NY 11237",
+    "category": "venue"
+  },
+  {
+    "name": "Union Pool",
+    "address": "484 Union Ave, Brooklyn, NY 11211",
+    "category": "venue"
+  },
+  {
+    "name": "Melophobe Studios",
+    "address": "207 Starr St Unit P, Brooklyn, NY 11237",
+    "category": "music space"
+  },
+  {
+    "name": "Red Note Rehearsal Studios",
+    "address": "10-01 Irving Ave #7, Ridgewood, NY 11385",
+    "category": "music space"
+  },
+  {
+    "name": "Electric Lady Studios",
+    "address": "52 W 8th St, New York, NY 10011",
+    "category": "music space"
+  },
+  {
+    "name": "Pirate Studios",
+    "address": "110 Scott Ave, Brooklyn, NY 11237",
+    "category": "music space"
+  },
+  {
+    "name": "East Village Radio",
+    "address": "19 1st Ave #1, New York, NY 10003",
+    "category": "music space"
+  },
+  {
+    "name": "Rivington Music Rehearsal Studios",
+    "address": "188 Stanton St, New York, NY 10002",
+    "category": "music space"
+  },
+  {
+    "name": "6/8 Studios",
+    "address": "17 Nassau Ave, Brooklyn, NY 11222",
+    "category": "music space"
+  },
+  {
+    "name": "Village Works",
+    "address": "12 St Marks Pl, New York, NY 10003",
+    "category": "book store"
+  },
+  {
+    "name": "Molasses Books",
+    "address": "770 Hart St, Brooklyn, NY 11237",
+    "category": "book store"
+  },
+  {
+    "name": "Quimby's",
+    "address": "536 Metropolitan Ave, Brooklyn, NY 11211",
+    "category": "book store"
+  },
+  {
+    "name": "Mast Books",
+    "address": "72 Avenue A, New York, NY 10009",
+    "category": "book store"
+  },
+  {
+    "name": "Sweet Pickle Books",
+    "address": "47 Orchard St, New York, NY 10002",
+    "category": "book store"
+  },
+  {
+    "name": "McNally Jackson Books SoHo",
+    "address": "134 Prince St, New York, NY 10012",
+    "category": "book store"
+  }
+]
