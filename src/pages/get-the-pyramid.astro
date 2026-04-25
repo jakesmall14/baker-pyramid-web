@@ -1,160 +1,489 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import locationsData from '../../public/data/locations.json';
+import locations from '../data/locations.json'
 ---
-
-<Layout title="Get the Pyramid — The Baker Pyramid">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get the Pyramid — The Baker Pyramid</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <div id="bp-map"></div>
-  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script is:inline define:vars={{ locationsData }}>
-    var SIZE = 2000;
-    var BOUNDS = [[0, 0], [SIZE, SIZE]];
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    var map = L.map('bp-map', {
-      crs: L.CRS.Simple,
-      minZoom: -1,
-      maxZoom: 2,
-      zoomControl: false,
-      attributionControl: false,
-      scrollWheelZoom: false,
-    });
-    map.fitBounds(BOUNDS);
-
-    function makePopupEl(loc) {
-      var div = document.createElement('div');
-      [['bp-pop-name', loc.name], ['bp-pop-addr', loc.address], ['bp-pop-cat', loc.category]].forEach(function (pair) {
-        var p = document.createElement('p');
-        p.className = pair[0];
-        p.textContent = pair[1];
-        div.appendChild(p);
-      });
-      return div;
+    html, body {
+      background: #ffffff;
+      color: #000000;
+      font-family: Georgia, 'Times New Roman', serif;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    locationsData.forEach(function (loc, i) {
-      var lat = 1800 - Math.floor(i / 8) * 225;
-      var lng = 200 + (i % 8) * 225;
-
-      var icon = L.divIcon({
-        className: '',
-        html: '<div class="bp-mk">' + (i + 1) + '</div>',
-        iconSize: [26, 26],
-        iconAnchor: [13, 13],
-        popupAnchor: [0, -18],
-      });
-
-      L.marker([lat, lng], { icon })
-        .bindPopup(L.popup({ className: 'bp-pop', closeButton: true }).setContent(makePopupEl(loc)))
-        .addTo(map);
-    });
-
-    function showPlaceholder() {
-      var el = document.getElementById('bp-map');
-      el.classList.add('is-placeholder');
-      var msg = document.createElement('div');
-      msg.className = 'bp-msg';
-      msg.textContent = 'Map coming soon — hand-drawn SVG drops here.';
-      el.appendChild(msg);
+    /* ── Map ── */
+    #map {
+      width: 100vw;
+      height: 100vh;
+      background: #ffffff;
     }
 
-    fetch('/maps/pyramid-map.svg', { method: 'HEAD' })
-      .then(function (r) {
-        if (r.ok) {
-          L.imageOverlay('/maps/pyramid-map.svg', BOUNDS).addTo(map);
-        } else {
-          showPlaceholder();
-        }
-      })
-      .catch(showPlaceholder);
-  </script>
-
-  <style is:global>
-    #bp-map {
-      width: 100%;
-      height: calc(100vh - var(--topbar-h) - var(--bottom-bar-h));
-      background: #fff;
-    }
-
-    #bp-map.is-placeholder {
-      outline: 2px dashed #000;
-      outline-offset: -16px;
-    }
-
-    .bp-msg {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-family: Georgia, serif;
-      font-size: 1rem;
-      color: #000;
-      pointer-events: none;
+    /* ── Floating dateline overlay ── */
+    .map-dateline {
+      position: fixed;
+      top: 8px;
+      left: 8px;
       z-index: 1000;
-      white-space: nowrap;
+      pointer-events: none;
     }
 
-    .bp-mk {
-      width: 26px;
-      height: 26px;
-      background: #000;
-      border-radius: 50%;
-      color: #fff;
+    /* Strip out all Leaflet chrome that adds color */
+    .leaflet-container {
+      background: #ffffff !important;
       font-family: Georgia, serif;
-      font-size: 10px;
-      line-height: 26px;
-      text-align: center;
-      cursor: pointer;
+      touch-action: none;
+    }
+    .leaflet-control-attribution {
+      background: transparent !important;
+      box-shadow: none !important;
+      font-family: Georgia, serif !important;
+      font-size: 0.45rem !important;
+      color: #000000 !important;
+      padding: 2px 4px !important;
+    }
+    .leaflet-control-attribution a {
+      color: #000000 !important;
     }
 
-    /* ── Popup reset ─────────────────────────────────────── */
-    .bp-pop .leaflet-popup-content-wrapper {
-      background: #fff;
-      border: 1px solid #000;
+    /* Popups */
+    .leaflet-popup-content-wrapper {
       border-radius: 0;
+      border: 1px solid #000000;
       box-shadow: none;
-      padding: 0;
+      background: #ffffff;
     }
-
-    .bp-pop .leaflet-popup-content {
-      margin: 0;
-      padding: 12px 16px;
-      min-width: 160px;
-    }
-
-    .bp-pop .leaflet-popup-tip-container {
-      display: none;
-    }
-
-    .bp-pop .leaflet-popup-close-button {
-      color: #000 !important;
-      font-size: 16px;
-      top: 4px;
-      right: 6px;
-    }
-
-    .bp-pop-name {
+    .leaflet-popup-tip-container { display: none; }
+    .leaflet-popup-content {
+      margin: 0.75rem 1rem;
       font-family: Georgia, serif;
-      font-weight: bold;
-      font-size: 0.9rem;
-      margin: 0 0 4px;
-      color: #000;
+      color: #000000;
     }
-
-    .bp-pop-addr {
-      font-family: Georgia, serif;
-      font-size: 0.8rem;
-      margin: 0 0 4px;
-      color: #000;
-    }
-
-    .bp-pop-cat {
-      font-family: Georgia, serif;
-      font-size: 0.75rem;
+    .popup-name {
       font-style: italic;
-      margin: 0;
-      color: #000;
-      text-transform: capitalize;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+    .popup-address {
+      font-size: 0.72rem;
+      letter-spacing: 0.03em;
+    }
+    .popup-category {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+      border-top: 1px solid #000000;
+      padding-top: 0.3rem;
     }
   </style>
-</Layout>
+</head>
+<body>
+
+  <div class="map-dateline">
+    <img src="/masterlogo1.svg" alt="The Baker Pyramid"
+         style="height:40px;width:auto;"
+         onerror="this.onerror=null;this.src='/masterlogo1.png'" />
+  </div>
+
+  <div id="map"></div>
+
+  <script is:inline src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script define:vars={{ locations }}>
+    const map = L.map('map', {
+      center: [40.7265, -73.9815],
+      zoom: 16,
+      minZoom: 12,
+      maxZoom: 18,
+      zoomSnap: 0.5,
+      scrollWheelZoom: true,
+      dragging: true,
+      touchZoom: true,
+      tap: true,
+      pinchZoom: true,
+      inertia: true,
+      inertiaDeceleration: 2500,
+      bounceAtZoomLimits: false,
+      zoomControl: false,
+    })
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 18,
+    }).addTo(map)
+
+    // Draw markers — smaller on mobile to avoid overlap
+    const mobile = window.innerWidth < 768
+    const mW     = mobile ? 120 : 160
+    const mSH    = mobile ? 28  : 35    // sign rect height
+    const mPH    = mobile ? 18  : 25    // post height
+    const mTH    = mSH + mPH + 4        // total SVG height
+    const mFont  = mobile ? 12  : 15
+    const mCx    = mW / 2
+    const mTY    = Math.round(mSH * 0.65) // text baseline y
+    const mArea  = mW - 24               // usable text width
+
+    locations.forEach((loc) => {
+      const label = loc.name.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      const tl = loc.name.length * (mFont * 0.6) > mArea
+        ? ` textLength="${mArea}" lengthAdjust="spacingAndGlyphs"` : ''
+      const icon = L.divIcon({
+        className: '',
+        html: `<svg xmlns="http://www.w3.org/2000/svg" width="${mW}" height="${mTH}" viewBox="0 0 ${mW} ${mTH}">
+          <rect x="0.75" y="0.75" width="${mW - 1.5}" height="${mSH - 0.5}"
+                fill="#ffffff" stroke="#000000" stroke-width="1.5"/>
+          <text x="${mCx}" y="${mTY}" text-anchor="middle"
+                font-family="Georgia, serif" font-size="${mFont}"
+                font-weight="bold" fill="#000000"${tl}>${label}</text>
+          <rect x="${mCx - 1.5}" y="${mSH}" width="3" height="${mPH}" fill="#000000"/>
+          <polygon points="${mCx-8},${mSH+mPH} ${mCx+8},${mSH+mPH} ${mCx},${mTH}" fill="#000000"/>
+        </svg>`,
+        iconSize: [mW, mTH],
+        iconAnchor: [mCx, mTH],
+        popupAnchor: [0, -(mTH + 4)],
+      })
+
+      L.marker([loc.lat, loc.lng], { icon })
+        .addTo(map)
+        .bindPopup(`
+          <div class="popup-name">${loc.name}</div>
+          <div class="popup-address">${loc.address}</div>
+          <div class="popup-category">${loc.category}</div>
+        `, { maxWidth: 220 })
+    })
+
+    // ── BIKER ────────────────────────────────────────────────────────
+    function geoToPx(lat, lng) {
+      return map.latLngToContainerPoint([lat, lng])
+    }
+
+    const mapEl = document.getElementById('map')
+
+    // Biker SVG
+    const bk = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    bk.setAttribute('viewBox', '0 0 80 76')
+    bk.setAttribute('width', '80')
+    bk.setAttribute('height', '76')
+    bk.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:800;overflow:visible'
+    bk.innerHTML = `
+      <g id="bk-rw">
+        <circle cx="14" cy="56" r="12" fill="#fff" stroke="#000" stroke-width="2.5"/>
+        <line x1="14" y1="44" x2="14" y2="68" stroke="#000" stroke-width="1" opacity=".35"/>
+        <line x1="2"  y1="56" x2="26" y2="56" stroke="#000" stroke-width="1" opacity=".35"/>
+        <line x1="5.5" y1="47.5" x2="22.5" y2="64.5" stroke="#000" stroke-width="1" opacity=".35"/>
+        <line x1="22.5" y1="47.5" x2="5.5" y2="64.5" stroke="#000" stroke-width="1" opacity=".35"/>
+        <circle cx="14" cy="56" r="2.5" fill="#000"/>
+      </g>
+      <g id="bk-fw">
+        <circle cx="65" cy="56" r="12" fill="#fff" stroke="#000" stroke-width="2.5"/>
+        <line x1="65" y1="44" x2="65" y2="68" stroke="#000" stroke-width="1" opacity=".35"/>
+        <line x1="53" y1="56" x2="77" y2="56" stroke="#000" stroke-width="1" opacity=".35"/>
+        <line x1="56.5" y1="47.5" x2="73.5" y2="64.5" stroke="#000" stroke-width="1" opacity=".35"/>
+        <line x1="73.5" y1="47.5" x2="56.5" y2="64.5" stroke="#000" stroke-width="1" opacity=".35"/>
+        <circle cx="65" cy="56" r="2.5" fill="#000"/>
+      </g>
+      <line x1="14" y1="56" x2="37" y2="42" stroke="#000" stroke-width="2.5"/>
+      <line x1="14" y1="56" x2="34" y2="35" stroke="#000" stroke-width="2"/>
+      <line x1="37" y1="42" x2="34" y2="32" stroke="#000" stroke-width="2.5"/>
+      <line x1="34" y1="32" x2="52" y2="34" stroke="#000" stroke-width="2"/>
+      <line x1="37" y1="42" x2="52" y2="36" stroke="#000" stroke-width="2.5"/>
+      <line x1="52" y1="32" x2="54" y2="40" stroke="#000" stroke-width="2.5"/>
+      <line x1="54" y1="40" x2="65" y2="56" stroke="#000" stroke-width="2.5"/>
+      <line x1="52" y1="32" x2="61" y2="26" stroke="#000" stroke-width="2.5"/>
+      <line x1="29" y1="30" x2="40" y2="31" stroke="#000" stroke-width="4" stroke-linecap="round"/>
+      <line x1="35" y1="33" x2="51" y2="24" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+      <line x1="47" y1="25" x2="59" y2="27" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="37" y1="42" x2="27" y2="52" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+      <line x1="27" y1="52" x2="18" y2="48" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="37" y1="42" x2="48" y2="50" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+      <line x1="48" y1="50" x2="57" y2="55" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="53" cy="17" r="9" fill="#fff" stroke="#000" stroke-width="2.5"/>
+      <circle cx="50" cy="15" r="1.4" fill="#000"/>
+      <circle cx="56" cy="15" r="1.4" fill="#000"/>
+      <path d="M49.5 19.5 Q53 23 56.5 19.5" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+      <path d="M44 17 Q53 6 62 17" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+      <rect x="41" y="13" width="6" height="9" rx="2" fill="#000"/>
+      <rect x="59" y="13" width="6" height="9" rx="2" fill="#000"/>
+      <g id="bk-n1" style="opacity:0"><text x="34" y="9" font-size="10" fill="#000" font-family="serif">♩</text></g>
+      <g id="bk-n2" style="opacity:0"><text x="48" y="5" font-size="10" fill="#000" font-family="serif">♪</text></g>
+      <g id="bk-n3" style="opacity:0"><text x="62" y="7" font-size="10" fill="#000" font-family="serif">♫</text></g>`
+    mapEl.appendChild(bk)
+
+    // Ferry boat SVG (hidden until East River crossing)
+    const ferry = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    ferry.setAttribute('viewBox', '0 0 100 55')
+    ferry.setAttribute('width', '100')
+    ferry.setAttribute('height', '55')
+    ferry.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:802;overflow:visible;opacity:0'
+    ferry.innerHTML = `
+      <polygon points="4,38 96,38 88,50 12,50" fill="#fff" stroke="#000" stroke-width="2"/>
+      <rect x="28" y="20" width="38" height="20" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <rect x="33" y="24" width="9" height="8" fill="#fff" stroke="#000" stroke-width="1"/>
+      <rect x="52" y="24" width="9" height="8" fill="#fff" stroke="#000" stroke-width="1"/>
+      <rect x="44" y="11" width="7" height="11" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <line x1="14" y1="38" x2="14" y2="15" stroke="#000" stroke-width="1.5"/>
+      <rect x="14" y="15" width="18" height="12" fill="#fff" stroke="#000" stroke-width="0.8"/>
+      <rect x="14" y="15" width="8" height="6" fill="#000"/>
+      <line x1="14" y1="18.5" x2="32" y2="18.5" stroke="#000" stroke-width="0.7"/>
+      <line x1="14" y1="21.5" x2="32" y2="21.5" stroke="#000" stroke-width="0.7"/>
+      <line x1="14" y1="24.5" x2="32" y2="24.5" stroke="#000" stroke-width="0.7"/>
+      <circle cx="77" cy="13" r="6" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <circle cx="75" cy="12" r="1" fill="#000"/>
+      <circle cx="79" cy="12" r="1" fill="#000"/>
+      <path d="M74.5 15 Q77 17.5 79.5 15" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M71 12 Q77 5 83 12" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+      <rect x="69" y="9" width="4" height="7" rx="2" fill="#000"/>
+      <rect x="81" y="9" width="4" height="7" rx="2" fill="#000"/>
+      <line x1="77" y1="19" x2="77" y2="30" stroke="#000" stroke-width="1.5"/>
+      <g id="ft-n1" style="opacity:0"><text x="62" y="8" font-size="9" fill="#000" font-family="serif">♩</text></g>
+      <g id="ft-n2" style="opacity:0"><text x="72" y="3" font-size="9" fill="#000" font-family="serif">♪</text></g>
+      <g id="ft-n3" style="opacity:0"><text x="82" y="6" font-size="9" fill="#000" font-family="serif">♫</text></g>`
+    mapEl.appendChild(ferry)
+
+    // Trail canvas (z-index 799, just below biker)
+    const trail = document.createElement('canvas')
+    trail.style.cssText = 'position:absolute;top:0;left:0;pointer-events:none;z-index:799'
+    trail.width  = mapEl.clientWidth
+    trail.height = mapEl.clientHeight
+    mapEl.appendChild(trail)
+    const tctx = trail.getContext('2d')
+
+    let trailPts = []
+    let bikerMoving = false
+    let bikerLat = 40.7295   // ROUTE[0] = MUD
+    let bikerLng = -73.9844
+
+    function addTrailPoint(x, y) {
+      trailPts.push({ x, y })
+      // Trim oldest points beyond 80px of path length
+      while (trailPts.length > 1) {
+        let len = 0
+        for (let i = 1; i < trailPts.length; i++)
+          len += Math.hypot(trailPts[i].x - trailPts[i-1].x, trailPts[i].y - trailPts[i-1].y)
+        if (len <= 80) break
+        trailPts.shift()
+      }
+    }
+
+    function drawTrail() {
+      tctx.clearRect(0, 0, trail.width, trail.height)
+      if (trailPts.length < 2) return
+      const n = trailPts.length
+      for (let i = 1; i < n; i++) {
+        const alpha = (i / (n - 1)) * 0.8   // 0 → transparent tail, 0.8 → solid head
+        tctx.beginPath()
+        tctx.moveTo(trailPts[i-1].x, trailPts[i-1].y)
+        tctx.lineTo(trailPts[i].x,   trailPts[i].y)
+        tctx.strokeStyle = `rgba(0,0,0,${alpha.toFixed(2)})`
+        tctx.lineWidth   = 1.5
+        tctx.lineCap     = 'round'
+        tctx.stroke()
+      }
+    }
+
+    function clearTrail() {
+      gsap.to(trail, {
+        opacity: 0, duration: 0.5,
+        onComplete() {
+          trailPts = []
+          tctx.clearRect(0, 0, trail.width, trail.height)
+          gsap.set(trail, { opacity: 1 })
+        }
+      })
+    }
+
+    // Re-project biker from lat/lng to pixels every frame — survives pan and zoom
+    gsap.ticker.add(() => {
+      const pt = map.latLngToContainerPoint([bikerLat, bikerLng])
+      gsap.set(bk, { x: pt.x - 40, y: pt.y - 56 })
+      if (bikerMoving) {
+        addTrailPoint(pt.x, pt.y)
+        drawTrail()
+      }
+    })
+    // Trail points are in pixel space — clear on any map movement
+    map.on('move zoom moveend zoomend', () => {
+      trailPts = []
+      tctx.clearRect(0, 0, trail.width, trail.height)
+    })
+
+    // Locations west of the East River are Manhattan; east is Brooklyn/Queens
+    function isManhattan(loc) { return loc.lng < -73.972 }
+
+    let ferryNoteTls = []
+    function ferryTo(dest, onDone) {
+      const fromX = gsap.getProperty(bk, 'x') + 40
+      const fromY = gsap.getProperty(bk, 'y') + 56
+      const toPt  = geoToPx(dest.lat, dest.lng)
+
+      gsap.set(ferry, { x: fromX - 50, y: fromY - 44, opacity: 0 })
+
+      ferryNoteTls = [['#ft-n1', 0], ['#ft-n2', 0.4], ['#ft-n3', 0.8]].map(([sel, delay]) => {
+        const el = ferry.querySelector(sel)
+        return gsap.timeline({ delay, repeat: -1, repeatDelay: 0.6 })
+          .set(el, { y: 0, opacity: 0 })
+          .to(el,  { opacity: 1, duration: 0.15 })
+          .to(el,  { y: -14, opacity: 0, duration: 0.9, ease: 'power1.out' })
+      })
+
+      gsap.timeline()
+        .to(bk,    { opacity: 0, duration: 0.5 })
+        .to(ferry, { opacity: 1, duration: 0.4 })
+        .to(ferry, { x: toPt.x - 50, y: toPt.y - 44, duration: 3, ease: 'power1.inOut' })
+        .to(ferry, { opacity: 0, duration: 0.4 })
+        .call(() => {
+          ferryNoteTls.forEach(tl => tl.kill())
+          bikerLat = dest.lat
+          bikerLng = dest.lng
+        })
+        .to(bk, { opacity: 1, duration: 0.4 })
+        .call(() => gsap.delayedCall(1, onDone))
+    }
+
+    const ROUTE = [
+      { name: "MUD",                          lat: 40.7295, lng: -73.9844 },
+      { name: "Thayer",                        lat: 40.7281, lng: -73.9789 },
+      { name: "Mr. Throwback",                lat: 40.7267, lng: -73.9780 },
+      { name: "Berlin",                        lat: 40.7263, lng: -73.9833 },
+      { name: "Nightclub 101",                 lat: 40.7261, lng: -73.9833 },
+      { name: "Superiority Burger",           lat: 40.7258, lng: -73.9838 },
+      { name: "Abraço",                        lat: 40.7268, lng: -73.9855 },
+      { name: "C&B",                           lat: 40.7268, lng: -73.9848 },
+      { name: "Sunday Morning",               lat: 40.7268, lng: -73.9848 },
+      { name: "Beacon's Closet EV",           lat: 40.7268, lng: -73.9848 },
+      { name: "The Library",                  lat: 40.7260, lng: -73.9833 },
+      { name: "Mast Books",                   lat: 40.7256, lng: -73.9833 },
+      { name: "City Fun",                     lat: 40.7252, lng: -73.9876 },
+      { name: "East Village Radio",           lat: 40.7248, lng: -73.9876 },
+      { name: "Book Club Bar",                lat: 40.7245, lng: -73.9862 },
+      { name: "Café Mogador EV",              lat: 40.7272, lng: -73.9857 },
+      { name: "Porto Rico Importing Co.",     lat: 40.7272, lng: -73.9857 },
+      { name: "Village Works",                lat: 40.7272, lng: -73.9857 },
+      { name: "Search & Destroy",             lat: 40.7272, lng: -73.9857 },
+      { name: "KGB Bar",                      lat: 40.7248, lng: -73.9889 },
+      { name: "Ergot Records",                lat: 40.7239, lng: -73.9889 },
+      { name: "Pimbeche Vintage",             lat: 40.7239, lng: -73.9889 },
+      { name: "3rd and Bazaar",               lat: 40.7239, lng: -73.9862 },
+      { name: "Electric Lady Studios",        lat: 40.7308, lng: -74.0002 },
+      { name: "Café Grumpy",                  lat: 40.7219, lng: -73.9876 },
+      { name: "Arlene's Grocery",             lat: 40.7207, lng: -73.9876 },
+      { name: "Rivington Music",              lat: 40.7197, lng: -73.9862 },
+      { name: "Baker Falls",                  lat: 40.7197, lng: -73.9876 },
+      { name: "Pianos",                       lat: 40.7197, lng: -73.9938 },
+      { name: "First Team Vintage",           lat: 40.7186, lng: -73.9938 },
+      { name: "Rare Bodega",                  lat: 40.7186, lng: -73.9921 },
+      { name: "Purgatory",                    lat: 40.7186, lng: -73.9889 },
+      { name: "Catalyst Records",             lat: 40.7186, lng: -73.9889 },
+      { name: "Sweet Pickle Books",           lat: 40.7186, lng: -73.9921 },
+      { name: "Scarr's Pizza",                lat: 40.7175, lng: -73.9938 },
+      { name: "Dimes",                        lat: 40.7152, lng: -74.0002 },
+      { name: "McNally Jackson",              lat: 40.7248, lng: -74.0002 },
+      { name: "BRIDGE_APPROACH",              lat: 40.7075, lng: -73.9950 },
+      { name: "BRIDGE_MID",                   lat: 40.7058, lng: -73.9890 },
+      { name: "BOAT",                         lat: 40.7040, lng: -73.9850 },
+      { name: "Vinyl + Thread",               lat: 40.6982, lng: -73.9876 },
+      { name: "Alphaville",                   lat: 40.6982, lng: -73.9876 },
+      { name: "Fire Talk",                    lat: 40.6998, lng: -73.9998 },
+      { name: "L Train Vintage Grand St",     lat: 40.7108, lng: -73.9538 },
+      { name: "Baby's All Right",             lat: 40.7086, lng: -73.9569 },
+      { name: "Vinnie's Pizzeria",            lat: 40.7152, lng: -73.9569 },
+      { name: "Partners Coffee",              lat: 40.7152, lng: -73.9538 },
+      { name: "designer collab.",             lat: 40.7152, lng: -73.9538 },
+      { name: "Café Mogador Wythe",           lat: 40.7175, lng: -73.9525 },
+      { name: "Good Bar",                     lat: 40.7197, lng: -73.9503 },
+      { name: "Union Pool",                   lat: 40.7175, lng: -73.9538 },
+      { name: "Pete's Candy Store",           lat: 40.7197, lng: -73.9503 },
+      { name: "Quimby's",                     lat: 40.7142, lng: -73.9503 },
+      { name: "The Lot Radio",                lat: 40.7286, lng: -73.9503 },
+      { name: "6/8 Studios",                  lat: 40.7286, lng: -73.9503 },
+      { name: "Beacon's Closet Greenpoint",   lat: 40.7286, lng: -73.9503 },
+      { name: "Sleepwalk",                    lat: 40.7028, lng: -73.9318 },
+      { name: "Sultan Room",                  lat: 40.7058, lng: -73.9245 },
+      { name: "Melophobe Studios",            lat: 40.7058, lng: -73.9245 },
+      { name: "Pirate Studios",               lat: 40.7058, lng: -73.9272 },
+      { name: "The Narrows",                  lat: 40.7028, lng: -73.9272 },
+      { name: "Variety Coffee Roasters",      lat: 40.7028, lng: -73.9352 },
+      { name: "Wyckoff Starr",                lat: 40.7035, lng: -73.9352 },
+      { name: "Vinyl Fantasy",                lat: 40.7028, lng: -73.9338 },
+      { name: "Octopus Records",              lat: 40.7028, lng: -73.9352 },
+      { name: "Foster Sundry",                lat: 40.7021, lng: -73.9365 },
+      { name: "Nook",                         lat: 40.7028, lng: -73.9352 },
+      { name: "Saint Michel Cafe",            lat: 40.7021, lng: -73.9352 },
+      { name: "L Train Vintage Thames",       lat: 40.7028, lng: -73.9352 },
+      { name: "L Train Vintage St Nicholas",  lat: 40.7021, lng: -73.9352 },
+      { name: "Molasses Books",               lat: 40.7021, lng: -73.9352 },
+      { name: "Red Note Studios",             lat: 40.7058, lng: -73.9245 },
+      { name: "LunÀtico",                     lat: 40.6862, lng: -73.9245 },
+      { name: "MUD_RETURN",                   lat: 40.7295, lng: -73.9844 },
+    ]
+
+    function segDur(lat1, lng1, lat2, lng2) {
+      const a = geoToPx(lat1, lng1), b = geoToPx(lat2, lng2)
+      return Math.max(0.1, Math.hypot(b.x - a.x, b.y - a.y) / 80)
+    }
+
+    function ride(i) {
+      const idx  = i % ROUTE.length
+      const pidx = (i - 1 + ROUTE.length) % ROUTE.length
+      const curr = ROUTE[idx], prev = ROUTE[pidx]
+      const proxy = { lat: bikerLat, lng: bikerLng }
+
+      if (curr.name === 'BOAT') {
+        bikerMoving = true
+        gsap.to(proxy, {
+          lat: curr.lat, lng: curr.lng,
+          duration: segDur(prev.lat, prev.lng, curr.lat, curr.lng),
+          ease: 'none',
+          onUpdate() { bikerLat = proxy.lat; bikerLng = proxy.lng },
+          onComplete() {
+            bikerLat = curr.lat; bikerLng = curr.lng
+            bikerMoving = false
+            clearTrail()
+            const nextIdx = (i + 1) % ROUTE.length
+            ferryTo(ROUTE[nextIdx], () => ride(i + 2))
+          }
+        })
+        return
+      }
+
+      bikerMoving = true
+      gsap.to(proxy, {
+        lat: curr.lat, lng: curr.lng,
+        duration: segDur(prev.lat, prev.lng, curr.lat, curr.lng),
+        ease: 'none',
+        onUpdate() { bikerLat = proxy.lat; bikerLng = proxy.lng },
+        onComplete() {
+          bikerLat = curr.lat; bikerLng = curr.lng
+          bikerMoving = false
+          clearTrail()
+          gsap.delayedCall(1, () => ride(i + 1))
+        }
+      })
+    }
+    ride(1)
+
+    gsap.to(bk.querySelector('#bk-rw'), { rotation:360, svgOrigin:'14 56', duration:1.4, ease:'none', repeat:-1 })
+    gsap.to(bk.querySelector('#bk-fw'), { rotation:360, svgOrigin:'65 56', duration:1.4, ease:'none', repeat:-1 })
+    ;[['#bk-n1',0],['#bk-n2',0.5],['#bk-n3',1.0]].forEach(([sel,delay]) => {
+      const el = bk.querySelector(sel)
+      gsap.timeline({ delay, repeat:-1, repeatDelay:0.8 })
+        .set(el, { y:0, opacity:0 })
+        .to(el, { opacity:1, duration:0.15 })
+        .to(el, { y:-16, opacity:0, duration:1.0, ease:'power1.out' })
+    })
+  </script>
+
+</body>
+</html>
