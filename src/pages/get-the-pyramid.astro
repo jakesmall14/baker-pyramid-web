@@ -85,6 +85,30 @@ import locations from '../data/locations.json'
       border-top: 1px solid #000000;
       padding-top: 0.3rem;
     }
+
+    /* ── Bottom nav ── */
+    .site-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.45rem 1rem;
+      background: #ffffff;
+      border-top: 1px solid #000000;
+      font-family: Georgia, serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.03em;
+      text-align: center;
+      z-index: 1000;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+    .site-nav a {
+      color: #000000;
+      text-decoration: none;
+    }
+    .site-nav a:hover { text-decoration: underline; }
+    .site-nav .sep { color: #000000; }
   </style>
 </head>
 <body>
@@ -484,6 +508,10 @@ import locations from '../data/locations.json'
         .to(el, { y:-16, opacity:0, duration:1.0, ease:'power1.out' })
     })
   </script>
+
+  <nav class="site-nav">
+    <a href="/get-the-pyramid">Get the Pyramid</a><span class="sep"> * </span><a href="#">Print Today's Pyramid</a><span class="sep"> * </span><a href="#">All Prior Pyramids</a><span class="sep"> * </span><a href="#">Play More Music in New York</a><span class="sep"> * </span><a href="#">About</a><span class="sep"> * </span><a href="#">Instagram</a><span class="sep"> * </span><a href="#">Sign Up for Pyramid Dropoffs</a>
+  </nav>
 
 </body>
 </html>
