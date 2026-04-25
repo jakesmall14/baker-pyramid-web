@@ -1,5 +1,7 @@
 ---
 import locations from '../data/locations.json'
+import { getLatestIssue } from '../utils/issues.js'
+const latest = getLatestIssue()
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -114,7 +116,7 @@ import locations from '../data/locations.json'
 <body>
 
   <div class="map-dateline">
-    <a href="https://thebakerpyramid.com" style="display:inline-block;line-height:0;">
+    <a href="https://thebakerpyramid.com" style="display:inline-block;line-height:0;pointer-events:auto;">
       <img src="/masterlogo1.svg" alt="The Baker Pyramid"
            style="height:40px;width:auto;"
            onerror="this.onerror=null;this.src='/masterlogo1.png'" />
@@ -512,7 +514,7 @@ import locations from '../data/locations.json'
   </script>
 
   <nav class="site-nav">
-    <a href="/get-the-pyramid">Get the Pyramid</a><span class="sep"> * </span><a href="#">Print Today's Pyramid</a><span class="sep"> * </span><a href="#">All Prior Pyramids</a><span class="sep"> * </span><a href="#">Play More Music in New York</a><span class="sep"> * </span><a href="#">About</a><span class="sep"> * </span><a href="#">Instagram</a><span class="sep"> * </span><a href="#">Sign Up for Pyramid Dropoffs</a>
+    <a href="/get-the-pyramid">Get the Pyramid</a><span class="sep"> * </span><a href={latest.url} target="_blank" rel="noopener noreferrer">Print Today's Pyramid</a><span class="sep"> * </span><a href="https://thebakerpyramid.com">All Prior Pyramids</a><span class="sep"> * </span><a href="https://thebakerpyramid.com">Play More Music in New York</a><span class="sep"> * </span><a href="https://thebakerpyramid.com">About</a><span class="sep"> * </span><a href="https://www.instagram.com/thebakerpyramid" target="_blank" rel="noopener noreferrer">Instagram</a><span class="sep"> * </span><a href="https://docs.google.com/forms/d/e/1FAIpQLSd2f7abla2soyyVLUfq4yyoTJQaFvtyLP7zKmfJcRk2jR0qZQ/viewform" target="_blank" rel="noopener noreferrer">Sign Up for Pyramid Dropoffs</a>
   </nav>
 
 </body>
