@@ -45,19 +45,22 @@ body {
   padding: 0 1rem;
 }
 
-#hamburger-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.3rem;
-  color: var(--black);
-  line-height: 0;
-  justify-self: start;
+.topbar-left {
   display: flex;
   align-items: center;
+  gap: 0.4rem;
 }
 
-#hamburger-btn:hover {
+.topbar-pin {
+  display: inline-flex;
+  align-items: center;
+  color: var(--black);
+  text-decoration: none;
+  line-height: 0;
+  flex-shrink: 0;
+}
+
+.topbar-pin:hover {
   opacity: 0.6;
 }
 
@@ -75,7 +78,6 @@ body {
 }
 
 .topbar-ig {
-  justify-self: end;
   color: var(--black);
   display: flex;
   align-items: center;
@@ -91,41 +93,56 @@ body {
   opacity: 0.6;
 }
 
-/* ── HAMBURGER DROPDOWN ───────────────────────────────── */
-.hamburger-dropdown {
-  display: none;
-  position: fixed;
-  top: var(--topbar-h);
-  left: 0;
-  z-index: 120;
-  background: var(--white);
-  border-right: var(--border);
-  border-bottom: var(--border);
-  min-width: 15rem;
-  flex-direction: column;
-  padding: 0.35rem 0;
-}
-
-.hamburger-dropdown.open {
+/* ── TOPBAR DESKTOP NAV ───────────────────────────────── */
+.topbar-right {
   display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
 }
 
-.hamburger-item {
+.topbar-dlinks {
+  display: none;
+}
+
+.topbar-modal-btn {
   background: none;
   border: none;
-  font-family: var(--font-sans);
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--black);
   cursor: pointer;
-  text-align: left;
-  padding: 0.65rem 1.5rem;
-  white-space: nowrap;
+  font-family: var(--font-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--black);
+  padding: 0;
 }
 
-.hamburger-item:hover {
-  background: #f2f2f2;
+.topbar-modal-btn:hover {
+  text-decoration: underline;
+}
+
+.topbar-sep {
+  user-select: none;
+  color: var(--black);
+}
+
+@media (min-width: 768px) {
+  .topbar-dlinks {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-serif);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  .topbar-dlinks a {
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .topbar-dlinks a:hover {
+    text-decoration: underline;
+  }
 }
 
 /* ── MAIN — full bleed, room for topbar + bottom bar ─── */
