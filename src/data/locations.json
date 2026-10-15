@@ -566,5 +566,13 @@
     "lat": 40.725491,
     "lng": -74.00051,
     "category": "books"
+  },
+  {
+    "id": 72,
+    "name": "Windjammer",
+    "address": "552 Grandview Ave, Ridgewood, NY 11385",
+    "lat": 40.709165,
+    "lng": -73.90697,
+    "category": "bar"
   }
 ]
